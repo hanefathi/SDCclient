@@ -1,18 +1,22 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import collabora from "@assets/images/collabora.svg";
+import axios from 'axios';
+interface OtpResponse {
+  statusCode: number;
+  message: string;
+  otp: string;
+}
 
 export default function Signup() {
   const navigate = useNavigate();
   const [mobile, setMobile] = useState("");
   const [nationalCode, setNationalCode] = useState("");
-
   const [stateForm, setStateForm] = useState(3); // Start with stateForm 1
   const [otp, setOtp] = useState<string | null>(null);
-  const [data, setData] = useState(null);
+  const [responseData, setResponseData] = useState(null);
   const [error, setError] = useState(null);
-
-
+ 
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,46 +31,51 @@ export default function Signup() {
   };
 
 
- 
-  
-  const postData = async () => {
-    const url = ''; // Replace with your API endpoint
-    const token = 'your_bearer_token'; // Replace with your Bearer token or set to null if not needed
 
-    const headers = {
-      'Content-Type': 'application/json',
-      ...(token && { Authorization: `Bearer ${token}` }) // Conditionally add Bearer token
-    };
+//   const fetchData = async () => {
+//     const token = null; // Example token
+//     try {
+//         const response = await axios.post(`http://localhost:8081/auth/signin`, {
+//             // Your request body goes here
+//             phoneNumber: "09917403979",
+//             otp: ""
+//         }, {
+//             headers: {
+//                 "Content-Type": "application/json", // Corrected from application.json
+//                 "Authorization": "Bearer " + token // Corrected Authorization spelling
+//             }
+//         });
 
-    const body = JSON.stringify({
-      key1: 'value1',
-      key2: 'value2',
-      // Add more key-value pairs as needed
-    });
+//         // Type assertion for response.data
+//         const res: OtpResponse = response.data;
 
-    try {
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: headers,
-        body: body,
-      });
+//         alert(res.otp); // This will alert the OTP
 
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-
-      const result = await response.json();
-      setData(result);
-    } catch (err) {
- 
-    }
-  };
+//     } catch (error) {
+//         alert(error);
+//     }
+// };
 
 
 
+const fetchData = async () => {
+  const token = null; // Example token
+  try {
+      const response = await axios.post(`http://localhost:8081/auth/signin`, {
+          // Your request body goes here
+          phoneNumber: mobile,
+          otp: ""
+      }, );
 
+      // Type assertion for response.data
+      const res: OtpResponse = response.data;
 
+      alert(res.otp); // This will alert the OTP
 
+  } catch (error) {
+      alert("کاربر با این وجود ندارد");
+  }
+};
   return (
     <div className="min-h-screen grid grid-cols-[2fr_1fr]">
       <div
@@ -75,6 +84,8 @@ export default function Signup() {
           backgroundImage: `url(${collabora})`,
         }}
       ></div>
+    
+   
 
       {stateForm === 1 ? (
         <>
@@ -153,6 +164,9 @@ export default function Signup() {
                   />
                 </div>
                 <button
+                onClick={()=>{
+                  getJwt()
+                }}
                   type="submit"
                   className="w-full py-3 bg-[#3C50E0] text-white font-semibold rounded-md hover:bg-[#2F44C2] transition duration-300"
                 >
@@ -194,7 +208,10 @@ export default function Signup() {
                   />
                 </div>
                 <button
-                 onClick={() => setStateForm(2)} 
+                 onClick={() => {
+                  setStateForm(2)
+                  fetchData();
+                 }} 
                   type="submit"
                   className="w-full py-3 bg-[#3C50E0] text-white font-semibold rounded-md hover:bg-[#2F44C2] 
                   transition duration-300"

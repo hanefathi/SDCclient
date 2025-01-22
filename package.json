@@ -25,6 +25,7 @@
     "antd-jalali": "^2.0.1",
     "antd-jalali-moment": "^3.3.8",
     "antd-jalali-plus": "^1.4.6",
+    "axios": "^1.7.9",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "dayjs": "^1.11.13",

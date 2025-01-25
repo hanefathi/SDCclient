@@ -3,6 +3,22 @@ import { useNavigate } from "react-router-dom";
 import backlogin from "@assets/images/backlogin.jpg";
 import CAPTCHA from "@assets/images/CAPTCHA.svg";
 import FormNegarblue from "@assets/images/FormNegarblue.svg";
+import Cookies from 'js-cookie';
+import { setCookie, getCookie, deleteCookie } from '../../../utill/Cookies/cookieUtils';
+
+
+import axios from 'axios';
+
+interface OtpResponse {
+  statusCode: number;
+  message: string;
+  otp: string;
+}
+
+type otpResToken = {
+  token: string,
+  expiresIn:number
+}
 
 export default function Login() {
   const navigate = useNavigate();
@@ -14,6 +30,12 @@ export default function Login() {
   const [verificationCode, setVerificationCode] = useState(["", "", "", ""]); 
   const inputRefs = useRef<HTMLInputElement[]>([]);
   const [timer, setTimer] = useState(120);
+  const [status, setStatus] = useState<number>(1)
+
+    const [otp, setOtp] = useState<string | null>("");
+    const [responseData, setResponseData] = useState(null);
+    const [error, setError] = useState(null);
+    const [responseCode, setResponseCode] = useState<string | null >("")
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
@@ -31,11 +53,24 @@ export default function Login() {
     return () => clearInterval(interval); 
   }, [isCodeSent, timer]);
 
-  const handleLogin = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleLogin = (e: React.FormEvent,status:boolean) => {
+    if (status==true){
+      e.preventDefault();
     setIsCodeSent(true);
     setTimer(120); 
+    fetchData() 
+    return
+    }
+    return
   };
+
+  
+
+const handleSetCookie = (cookieName:string,cookieValue:string) => {
+  setCookie(cookieName, cookieValue, import.meta.env.VITE_COOKI_EXPIRED); // 1 day expiration
+  console.log(otp);
+};
+
 
   const handleCodeChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
     const value = e.target.value;
@@ -56,12 +91,15 @@ export default function Login() {
   const handleVerifyCode = (e: React.FormEvent) => {
     e.preventDefault();
     const code = verificationCode.join("");
-    
-    if (code === "1234") {
-      navigate("/home"); 
+    if (code === otp) {
+     
+      fetchData()
+       navigate("/home"); 
     } else {
       alert("کد وارد شده صحیح نیست.");
     }
+
+
   };
 
   const formatTime = (seconds: number) => {
@@ -79,6 +117,36 @@ export default function Login() {
       if (isDomestic) setIsDomestic(false);
     }
   };
+
+
+
+const fetchData = async () => {
+  const token = null; // Example token
+  try {
+      const response = await axios.post(import.meta.env.VITE_HOST+`/auth/signin`, {
+          // Your request body goes here
+          phoneNumber: mobile,
+          otp: otp
+      }, );
+
+      // Type assertion for response.data
+      if (otp==""){
+        const res: OtpResponse = response.data;
+        alert(res.otp)
+        setOtp(res.otp);
+        return
+      }
+    
+      const res: otpResToken = response.data; 
+      handleSetCookie("authToken",res.token)
+
+      
+
+  } catch (error) {
+      console.log(error)
+  }
+};
+
 
   return (
     <div className="min-h-screen grid grid-cols-[1fr_1fr] relative ">
@@ -115,7 +183,7 @@ export default function Login() {
                 کد تایید
             </h2>
             <h3 className="text-lg text-[#8A99AF] text-right mb-14">
-            کد تایید ارسال شده به شماره همراه را وارد نمایید
+            کد تایید ارسال شده به شماره همراه  {mobile} را وارد نمایید
             </h3>
             
             <form onSubmit={handleVerifyCode}>
@@ -140,6 +208,11 @@ export default function Login() {
               </div>
               
               <button
+              onClick={()=>{
+                setMobile("")
+                setOtp("")
+                setIsCodeSent(!isCodeSent)
+              }}
                 type="submit"
                 className=" flex items-center ml-64 w-30 text-[#3C50E0]"
               >
@@ -162,7 +235,7 @@ export default function Login() {
             <h1 className=" font-bold text-[#8A99AF] text-center mb-10">
               سامانه ساخت گواهی کسر از حقوق دیجیتالی
             </h1>
-            <form onSubmit={handleLogin}>
+            <form onSubmit={(e)=>{handleLogin(e,true)}}>
               <div className="mb-4">
                 <label
                   htmlFor="mobile"
@@ -176,12 +249,12 @@ export default function Login() {
                   value={mobile}
                   onChange={(e) => setMobile(e.target.value)}
                   className="w-full p-3 border text-[#8A99AF] rounded-md mt-2 text-right"
-                  placeholder="  شماره همراه خود را وارد کنید"
+                  placeholder="0912xxxxxxx"
                   required
                 />
               </div>
 
-              <div className="mb-2">
+              {/* <div className="mb-2">
                 <label
                   htmlFor="password"
                   className="block text-sm font-semibold text-[#8A99AF] text-right"
@@ -197,14 +270,16 @@ export default function Login() {
                   placeholder="رمز عبور خود را وارد کنید"
                   required
                 />
-              </div>
+              </div> */}
+              
 
               <div className="mb-8 flex items-center justify-end">
-                {/* <div className="flex items-center">
+                <div className="flex items-center">
                   <button className="text-sm font-semibold text-[#3C50E0] mr-2">
                     رمز عبورم را فراموش کردم
                   </button>
-                </div> */}
+                </div>
+                
                 <div className="flex items-center space-x-reverse space-x-2 ml-16">
                   <label
                     htmlFor="foreign"
@@ -222,7 +297,7 @@ export default function Login() {
                 </div>
               </div>
 
-              <div className=" flex items-center justify-between w-80 h-50 bg-[#F9F9F9] border border-[#D3D3D3] border rounded-sm mb-4 text-right ml-auto">
+              {/* <div className=" flex items-center justify-between w-80 h-50 bg-[#F9F9F9] border border-[#D3D3D3] border rounded-sm mb-4 text-right ml-auto">
                 <div>
                   <img src={CAPTCHA} className="w-18 h-18 ml-6" alt="Icon" />
                 </div>
@@ -241,9 +316,12 @@ export default function Login() {
                     className=" text-[#3C50E0] focus:ring-[#2F44C2] w-6 h-6 mr-4"
                   />
                 </div>
-              </div>
+              </div> */}
 
               <button
+              onClick={(e)=>{
+                handleLogin(e,true)
+              }}
                 type="submit"
                 className="w-full py-3 bg-[#3C50E0] text-white font-semibold rounded-md hover:bg-[#2F44C2] transition duration-300"
               >

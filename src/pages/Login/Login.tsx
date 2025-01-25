@@ -92,9 +92,8 @@ const handleSetCookie = (cookieName:string,cookieValue:string) => {
     e.preventDefault();
     const code = verificationCode.join("");
     if (code === otp) {
-     
       fetchData()
-       navigate("/home"); 
+      navigate("/home"); 
     } else {
       alert("کد وارد شده صحیح نیست.");
     }
@@ -139,6 +138,7 @@ const fetchData = async () => {
     
       const res: otpResToken = response.data; 
       handleSetCookie("authToken",res.token)
+      navigate("/home"); 
 
       
 

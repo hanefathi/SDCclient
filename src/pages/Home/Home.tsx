@@ -8,7 +8,7 @@ import imghome from "@assets/images/imghome.png";
 import folderblue from "@assets/images/folderblue.svg";
 import leftline from "@assets/images/leftline.svg";
 import { getCookie } from '@/utills/Cookies/cookieUtils';
-
+import axios from "axios";
 
 export default function Home() {
   const navigate = useNavigate();
@@ -31,6 +31,8 @@ export default function Home() {
     { status: "در انتظار", date: "1403/08/19",fullname: "سارا احمدی", hoghogh: "100,000,000", installmentAmount: "10,000,000", trackingCode: "123456", signStatus: "در انتظار امضا",id:"9" },
     { status: "در انتظار", date: "1403/08/19",fullname: "سارا احمدی", hoghogh: "100,000,000", installmentAmount: "10,000,000", trackingCode: "123456", signStatus: "امضا شده",id:"10"  },
   ];
+
+const [user, setUser] = useState<object>({})
 
   const [selectedRecords, setSelectedRecords] = useState<string[]>([]); 
   const [selectAll, setSelectAll] = useState(false);
@@ -79,36 +81,28 @@ const handleCheckCookie = () => {
 };
 
 
-// const fetchData = async () => {
-//   const token = null; // Example token
-//   try {
-//       const response = await axios.post(import.meta.env.VITE_HOST+`/auth/signin`, {
-//           // Your request body goes here
-//           phoneNumber: mobile,
-//           otp: otp
-//       }, );
 
-//       // Type assertion for response.data
-//       if (otp==""){
-//         const res: OtpResponse = response.data;
-//         alert(res.otp)
-//         setOtp(res.otp);
-//         return
-//       }
-    
-//       const res: otpResToken = response.data; 
-//       handleSetCookie("authToken",res.token)
 
-      
 
-//   } catch (error) {
-//       console.log(error)
-//   }
-// };
 
+
+const fetchData= async()=>{
+  const token = getCookie("authToken"); // Example token
+  try {
+      const response =axios.get(import.meta.env.VITE_HOST + `/api/v1/user/me`, {
+          headers: {
+              'Authorization': `Bearer ${token}`
+          }
+      });
+    setUser((await response).data)
+
+  } catch (error) {
+      console.log(error);
+  }
+}
 
 useEffect(() => {
-  handleCheckCookie(); // Call the function inside useEffect
+fetchData()
 }, []);
   
 

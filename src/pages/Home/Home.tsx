@@ -1,4 +1,4 @@
-import React ,{useState} from "react";
+import React ,{useEffect, useState} from "react";
 import { Table, TableHeader, TableBody, TableRow, TableCell } from "@/components/ui/table";
 import addbutton from "@assets/images/addbutton.svg";
 import { useNavigate } from "react-router-dom";
@@ -7,7 +7,7 @@ import frame from "@assets/images/frame.svg";
 import imghome from "@assets/images/imghome.png";
 import folderblue from "@assets/images/folderblue.svg";
 import leftline from "@assets/images/leftline.svg";
-
+import { getCookie } from "utill/Cookies/cookieUtils";
 
 
 export default function Home() {
@@ -68,6 +68,20 @@ export default function Home() {
         : [...prev, id]
     );
   };
+
+const handleCheckCookie = () => {
+  const cookieValue = getCookie('authToken');
+  if (cookieValue) {
+    return
+  } else {
+    navigate("/login")
+  }
+};
+
+useEffect(() => {
+  handleCheckCookie(); // Call the function inside useEffect
+}, []);
+  
 
   return (
     <div className="p-8 bg-[#eef2ff] min-h-screen md:p-6 lg:p-8">

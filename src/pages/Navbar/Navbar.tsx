@@ -15,6 +15,7 @@ interface User {
 }
 
 export default function Navbar() {
+  
   const user: User = {
     firstName: 'محمد',
     lastName: 'امینی',

@@ -35,8 +35,6 @@ function Layout() {
               <Route path="/requests" element={<Requests />} />
               <Route path="/settings" element={<Settings />} />
               <Route path="/tutorials" element={<Tutorials />} />
-
-
             </Routes>
           </div>
         )}

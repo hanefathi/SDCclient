@@ -97,6 +97,7 @@ const fetchData= async()=>{
     setUser((await response).data)
 
   } catch (error) {
+    navigate("/login")
       console.log(error);
   }
 }

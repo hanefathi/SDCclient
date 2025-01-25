@@ -4,7 +4,7 @@ import backlogin from "@assets/images/backlogin.jpg";
 import CAPTCHA from "@assets/images/CAPTCHA.svg";
 import FormNegarblue from "@assets/images/FormNegarblue.svg";
 import Cookies from 'js-cookie';
-import { setCookie, getCookie, deleteCookie } from '../../../utill/Cookies/cookieUtils';
+import { setCookie, getCookie, deleteCookie } from '@/utills/Cookies/cookieUtils';
 
 
 import axios from 'axios';

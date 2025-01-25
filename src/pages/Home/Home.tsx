@@ -7,7 +7,7 @@ import frame from "@assets/images/frame.svg";
 import imghome from "@assets/images/imghome.png";
 import folderblue from "@assets/images/folderblue.svg";
 import leftline from "@assets/images/leftline.svg";
-import { getCookie } from "utill/Cookies/cookieUtils";
+import { getCookie } from '@/utills/Cookies/cookieUtils';
 
 
 export default function Home() {
@@ -77,6 +77,35 @@ const handleCheckCookie = () => {
     navigate("/login")
   }
 };
+
+
+// const fetchData = async () => {
+//   const token = null; // Example token
+//   try {
+//       const response = await axios.post(import.meta.env.VITE_HOST+`/auth/signin`, {
+//           // Your request body goes here
+//           phoneNumber: mobile,
+//           otp: otp
+//       }, );
+
+//       // Type assertion for response.data
+//       if (otp==""){
+//         const res: OtpResponse = response.data;
+//         alert(res.otp)
+//         setOtp(res.otp);
+//         return
+//       }
+    
+//       const res: otpResToken = response.data; 
+//       handleSetCookie("authToken",res.token)
+
+      
+
+//   } catch (error) {
+//       console.log(error)
+//   }
+// };
+
 
 useEffect(() => {
   handleCheckCookie(); // Call the function inside useEffect

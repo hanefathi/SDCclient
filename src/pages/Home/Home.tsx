@@ -11,12 +11,14 @@ import { getCookie } from '@/utills/Cookies/cookieUtils';
 import axios from "axios";
 import { ProfileContext } from "@/App";
 import moment from 'moment-jalaali';
+import PdfViewer from "@/utills/ReadPdf/PdfViewer";
 
 export default function Home() {
   const navigate = useNavigate();
 
   const{user,setUser}=useContext(ProfileContext)
 
+  const [pdfbas64view, setPdfbas64view] = useState()
 
   const stats = {
     totalRequests: user?.transactions.length,
@@ -160,7 +162,7 @@ createReq()
 }, []);
   
 
-const fetchDataPdf = async (trackId) => {
+const fetchDataPdf = async (trackId:number) => {
   try {
     const response = await axios.get(`${import.meta.env.VITE_HOST}/api/v1/file/pdf?trackId=${trackId}`);
     return response.data.pdf; // Assuming this returns the Base64 string
@@ -399,7 +401,7 @@ const handleDownload =async(trackId:number) => {
        </div>
     </div>
 
-  
+   
 </>
 );
 }

@@ -91,7 +91,7 @@ function Layout() {
 }
 
 export default function App() {
-  const [user, setUser] = useState<User | null>(null); // Initialize user state
+  const [user, setUser] = useState<User | null | any>(null); // Initialize user state
 
   return (
     <ProfileContext.Provider value={{ user, setUser }}>

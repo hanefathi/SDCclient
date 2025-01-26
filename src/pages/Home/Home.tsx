@@ -1,4 +1,4 @@
-import React ,{useEffect, useState} from "react";
+import React ,{useEffect, useState,useContext} from "react";
 import { Table, TableHeader, TableBody, TableRow, TableCell } from "@/components/ui/table";
 import addbutton from "@assets/images/addbutton.svg";
 import { useNavigate } from "react-router-dom";
@@ -9,9 +9,13 @@ import folderblue from "@assets/images/folderblue.svg";
 import leftline from "@assets/images/leftline.svg";
 import { getCookie } from '@/utills/Cookies/cookieUtils';
 import axios from "axios";
+import { ProfileContext } from "@/App";
+import moment from 'moment-jalaali';
 
 export default function Home() {
   const navigate = useNavigate();
+
+  const{user}=useContext(ProfileContext)
 
   const stats = {
     totalRequests: 18,
@@ -19,20 +23,66 @@ export default function Home() {
     unsignedRequests: 4,
   };
 
-  const requestsData = [
-    { status: "در انتظار", date: "1403/08/19",fullname: " محمد امینی", hoghogh: "100,000,000", installmentAmount: "10,000,000", trackingCode: "123456", signStatus: "در انتظار امضا",id:"1" },
-    { status: "موفق", date: "1403/08/18", fullname: " محمد امینی ", hoghogh: "200,000,000", installmentAmount: "20,000,000", trackingCode: "654321", signStatus: "امضا شده",id:"2"  },
-    { status: "در انتظار", date: "1403/08/19",fullname: " محمد امینی ",hoghogh: "100,000,000", installmentAmount: "10,000,000", trackingCode: "123456", signStatus: "امضا شده",id:"3"  },
-    { status: "موفق", date: "1403/08/18", fullname: "  محمد امینی",hoghogh: "200,000,000", installmentAmount: "20,000,000", trackingCode: "654321", signStatus: "انصراف از امضا" ,id:"4" },
-    { status: "در انتظار", date: "1403/08/19",fullname: " محمد امینی ", hoghogh: "100,000,000", installmentAmount: "10,000,000", trackingCode: "123456", signStatus: "انصراف از امضا",id:"5"  },
-    { status: "موفق", date: "1403/08/18",fullname: "سارا احمدی", hoghogh: "200,000,000", installmentAmount: "20,000,000", trackingCode: "654321", signStatus: "انصراف از امضا" ,id:"6" },
-    { status: "در انتظار", date: "1403/08/19",fullname: "سارا احمدی", hoghogh: "100,000,000", installmentAmount: "10,000,000", trackingCode: "123456", signStatus: "در انتظار امضا",id:"7" },
-    { status: "موفق", date: "1403/08/18",fullname: "سارا احمدی", hoghogh: "200,000,000", installmentAmount: "20,000,000", trackingCode: "654321", signStatus: "انصراف از امضا" ,id:"8" },
-    { status: "در انتظار", date: "1403/08/19",fullname: "سارا احمدی", hoghogh: "100,000,000", installmentAmount: "10,000,000", trackingCode: "123456", signStatus: "در انتظار امضا",id:"9" },
-    { status: "در انتظار", date: "1403/08/19",fullname: "سارا احمدی", hoghogh: "100,000,000", installmentAmount: "10,000,000", trackingCode: "123456", signStatus: "امضا شده",id:"10"  },
-  ];
+  // { status: "در انتظار", date: "1403/08/19",fullname: " محمد امینی",
+  //    hoghogh: "100,000,000", 
+  //    installmentAmount: "10,000,000",
+  //     trackingCode: "123456",
+  //      signStatus: "در انتظار امضا",
+  //      id:"1" 
+  // },
 
-const [user, setUser] = useState<object>({})
+
+  const [requestsData, setRequestsData] = useState(
+    [
+    //   { status: 0, date: "1403/08/19", fullname: "محمد امینی", hoghogh: "100,000,000", installmentAmount: "10,000,000", trackingCode: "123456", signStatus: "در انتظار امضا", id: 1 },
+    //   { status: 1, date: "1403/08/18", fullname: "محمد امینی", hoghogh: "200,000,000", installmentAmount: "20,000,000", trackingCode: "654321", signStatus: "امضا شده", id: 2 },
+    //   { status: 2, date: "1403/08/18", fullname: "محمد امینی", hoghogh: "200,000,000", installmentAmount: "20,000,000", trackingCode: "654321", signStatus: "انصراف از امضا", id: 4 },
+    ]
+  );
+  
+  type Req = {
+    status: number; // Changed to number
+    date: string; // Changed from data to date
+    fullname: string;
+    hoghogh: string;
+    installmentAmount: string;
+    trackingCode: string;
+    signStatus: string;
+    id: number;
+  };
+  
+
+  const jalaliDate = (data:string) =>{
+    const jalaliDate = moment(data).format('jYYYY/jM/jD');
+    return jalaliDate;
+  }
+
+  const createReq = (): void => {
+    const transactions = user.transactions;
+    for (let i = 0; i < transactions.length; i++) { // Fixed loop condition
+      const res: Req = {
+        status: transactions[i].status, // Accessing the status correctly
+        date: jalaliDate(transactions[i].createdAt), // Assuming you meant to include this in the date field
+        fullname: `${transactions[i].fullName}`,
+        hoghogh: `${transactions[i].salaryAmount}`,
+        installmentAmount: transactions[i].deficitAmount,
+        trackingCode:`${transactions[i].trackId}`,
+        signStatus: transactions[i].status === 1 ? "امضا شده" : "در انتظار امضا",
+        id: transactions[i].id,
+      };
+      
+      setRequestsData(prev => [...prev, res]); // Correctly updating state
+    }
+  };
+  
+
+
+
+
+
+
+
+// const [user, setUser] = useState<object>({})
 
   const [selectedRecords, setSelectedRecords] = useState<string[]>([]); 
   const [selectAll, setSelectAll] = useState(false);
@@ -71,39 +121,33 @@ const [user, setUser] = useState<object>({})
     );
   };
 
-const handleCheckCookie = () => {
-  const cookieValue = getCookie('authToken');
-  if (cookieValue) {
-    return
-  } else {
-    navigate("/login")
-  }
-};
+// const handleCheckCookie = () => {
+//   const cookieValue = getCookie('authToken');
+//   if (cookieValue) {
+//     return
+//   } else {
+//     navigate("/login")
+//   }
+// };
 
+// const fetchData= async()=>{
+//   const token = getCookie("authToken"); // Example token
+//   try {
+//       const response =axios.get(import.meta.env.VITE_HOST + `/api/v1/user/me`, {
+//           headers: {
+//               'Authorization': `Bearer ${token}`
+//           }
+//       });
+//     setUser((await response).data)
 
-
-
-
-
-
-const fetchData= async()=>{
-  const token = getCookie("authToken"); // Example token
-  try {
-      const response =axios.get(import.meta.env.VITE_HOST + `/api/v1/user/me`, {
-          headers: {
-              'Authorization': `Bearer ${token}`
-          }
-      });
-    setUser((await response).data)
-
-  } catch (error) {
-    navigate("/login")
-      console.log(error);
-  }
-}
+//   } catch (error) {
+//     navigate("/login")
+//       console.log(error);
+//   }
+// }
 
 useEffect(() => {
-fetchData()
+createReq()
 }, []);
   
 

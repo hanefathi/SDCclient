@@ -17,6 +17,7 @@ export default function Home() {
 
   const{user,setUser}=useContext(ProfileContext)
 
+
   const stats = {
     totalRequests: user?.transactions.length,
     successfulRequests:user?.transactions.filter(transaction => transaction.status === 1).length,
@@ -159,7 +160,42 @@ createReq()
 }, []);
   
 
+const fetchDataPdf = async (trackId) => {
+  try {
+    const response = await axios.get(`${import.meta.env.VITE_HOST}/api/v1/file/pdf?trackId=${trackId}`);
+    return response.data.pdf; // Assuming this returns the Base64 string
+  } catch (error) {
+    console.error('Error fetching PDF:', error);
+    throw error; // Rethrow the error to handle it in the calling function
+  }
+};
 
+
+const handleDownload =async(trackId:number) => {
+ const test =await fetchDataPdf(trackId)
+  const pdfBase64= test
+  const byteCharacters = atob(pdfBase64);
+  const byteNumbers = new Array(byteCharacters.length);
+  for (let i = 0; i < byteCharacters.length; i++) {
+    byteNumbers[i] = byteCharacters.charCodeAt(i);
+  }
+  const byteArray = new Uint8Array(byteNumbers);
+
+  // Create a Blob from the byte array
+  const blob = new Blob([byteArray], { type: 'application/pdf' });
+
+  // Create a link element
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = `Emzagar-${trackId}.pdf`; // Specify the file name
+
+  // Append to the body and trigger click
+  document.body.appendChild(link);
+  link.click();
+
+  // Clean up and remove the link
+  document.body.removeChild(link);
+}
 
 
   return (
@@ -324,10 +360,10 @@ createReq()
                         
                       ) : (
                         <div className="flex space-x-2 justify-center">
-                          <button className="bg-white text-[#6681A9] px-2 py-1 rounded-lg">
+                          <button className="bg-white text-[#6681A9] px-2 py-1 rounded-lg" onClick={()=>{alert(11)}}>
                             <img src={eye} className="w-6 h-6 ml-2" alt=" Icon" />
                           </button>
-                          <button className="bg-white text-[#3C50E0] px-2 py-1 rounded-lg">
+                          <button className="bg-white text-[#3C50E0] px-2 py-1 rounded-lg" onClick={()=>{handleDownload(request.trackingCode)}}>
                             <img
                               src={frame}
                               className="w-6 h-6 ml-2"
@@ -364,6 +400,7 @@ createReq()
        </div>
     </div>
 
+  
 </>
   );
 }

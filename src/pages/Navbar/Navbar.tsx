@@ -12,25 +12,19 @@ import axios from 'axios';
 export default function Navbar() {
   const context = useContext(ProfileContext);
   const [dateTime, setDateTime] = useState<string>('');
-  const [fullName, setFullName] = useState<string | null>(null);
-  const [phoneNumber, setPhoneNumber] = useState<string | null>(null);
-  const [profileImage, setProfileImage] = useState<string>(Profile); // Default profile image
-
-  // Handle potential undefined context
-  if (!context) {
-    return null; // or a loading state
-  }
-
+  const [fullName, setFullName] = useState<any>(undefined);
+  const [phoneNumber, setPhoneNumber] = useState<any>("");
+  const [profileImage, setProfileImage] = useState<any>(Profile); // Default profile image
   const { user } = context;
 
   useEffect(() => {
     // Set initial state from user context
-    setFullName(user.fullName || "مهمان");
-    setPhoneNumber(user.phoneNumber || "0912XXXXXXX");
+    setFullName(user?.fullName);
+    setPhoneNumber(user?.phoneNumber || "0912XXXXXXX");
 
     const fetchProfileImage = async () => {
       try {
-        const response = await axios.get(user.profileImage);
+        const response = await axios.get(user?.profileImage);
         setProfileImage(response.data.image);
       } catch (error) {
         console.error(error);
@@ -42,7 +36,7 @@ export default function Navbar() {
     const now = moment();
     const formattedDate = now.format('jYYYY/jMM/jDD HH:mm');
     setDateTime(formattedDate);
-  }, [user]); // Dependency on user to re-run effect if user changes
+  }, []); // Dependency on user to re-run effect if user changes
 
   return (
     <nav className="fixed top-0 left-0 right-40 z-10 flex justify-between items-center bg-[#FFFFFF] h-20 px-12 shadow-md" style={{direction:'rtl'}}>

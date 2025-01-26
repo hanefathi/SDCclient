@@ -15,12 +15,12 @@ import moment from 'moment-jalaali';
 export default function Home() {
   const navigate = useNavigate();
 
-  const{user}=useContext(ProfileContext)
+  const{user,setUser}=useContext(ProfileContext)
 
   const stats = {
-    totalRequests: 18,
-    successfulRequests: 16,
-    unsignedRequests: 4,
+    totalRequests: user?.transactions.length,
+    successfulRequests:user?.transactions.filter(transaction => transaction.status === 1).length,
+    unsignedRequests: user?.transactions.filter(transaction => transaction.status === 0).length,
   };
 
   // { status: "در انتظار", date: "1403/08/19",fullname: " محمد امینی",
@@ -58,9 +58,10 @@ export default function Home() {
   }
 
   const createReq = (): void => {
-    const transactions = user.transactions;
-    for (let i = 0; i < transactions.length; i++) { // Fixed loop condition
-      const res: Req = {
+    let arr:any = [];
+    const transactions = user?.transactions;
+    for (let i = 0; i < transactions?.length; i++) { // Fixed loop condition
+      const req: Req = {
         status: transactions[i].status, // Accessing the status correctly
         date: jalaliDate(transactions[i].createdAt), // Assuming you meant to include this in the date field
         fullname: `${transactions[i].fullName}`,
@@ -71,8 +72,11 @@ export default function Home() {
         id: transactions[i].id,
       };
       
-      setRequestsData(prev => [...prev, res]); // Correctly updating state
+     arr.push(req)
     }
+
+     setRequestsData(arr); // Correctly updating state
+       setRoles(user.role)
   };
   
 
@@ -89,8 +93,10 @@ export default function Home() {
   const [requests, setRequests] = useState(requestsData);
   const [signatureFilter, setSignatureFilter] = useState("");
   const [dateFilter, setDateFilter] = useState("");
-  
   const [searchQuery, setSearchQuery] = useState("");
+
+  const [roles, setRoles] = useState<string[]>([])
+  // setRoles(user?.role)
 
   const filteredRequests = requestsData.filter((request) => {
     return (
@@ -121,41 +127,56 @@ export default function Home() {
     );
   };
 
-// const handleCheckCookie = () => {
-//   const cookieValue = getCookie('authToken');
-//   if (cookieValue) {
-//     return
-//   } else {
-//     navigate("/login")
-//   }
-// };
+const handleCheckCookie = () => {
+  const cookieValue = getCookie('authToken');
+  if (cookieValue) {
+    return
+  } else {
+    navigate("/login")
+  }
+};
 
-// const fetchData= async()=>{
-//   const token = getCookie("authToken"); // Example token
-//   try {
-//       const response =axios.get(import.meta.env.VITE_HOST + `/api/v1/user/me`, {
-//           headers: {
-//               'Authorization': `Bearer ${token}`
-//           }
-//       });
-//     setUser((await response).data)
+const fetchData= async()=>{
+  const token = getCookie("authToken"); // Example token
+  try {
+      const response =axios.get(import.meta.env.VITE_HOST + `/api/v1/user/me`, {
+          headers: {
+              'Authorization': `Bearer ${token}`
+          }
+      });
+    setUser((await response).data)
 
-//   } catch (error) {
-//     navigate("/login")
-//       console.log(error);
-//   }
-// }
+  } catch (error) {
+    navigate("/login")
+      console.log(error);
+  }
+}
 
 useEffect(() => {
+  fetchData()
 createReq()
+
 }, []);
   
 
+
+
+
   return (
+    
+<>
     <div className="p-8 bg-[#eef2ff] min-h-screen md:p-6 lg:p-8">
       {/* Header Section */}
       <div className="text-right mr-4">
-        <p className='text-2xl font-bold text-[#1C2434]'>   داشبورد </p>
+        <p className='text-2xl font-bold text-[#1C2434]'>  
+          <button onClick={()=>{
+            alert(roles)
+           const j =  roles.includes("ADMIN")
+           alert(j)
+          }}>
+            test
+          </button>
+           داشبورد </p>
       </div>
     
       <div className="flex items-center justify-center">
@@ -281,12 +302,26 @@ createReq()
                   <TableRow key={request.id}>
                     <TableCell>
                       {request.signStatus === "در انتظار امضا" ? (
+
+                      
                         <div className="flex items-center justify-center text-center">
-                          <button className="flex justify-end bg-[#3C50E0] text-white px-6 py-1 rounded-sm text-center">
+                      
+                        {roles.includes("ADMIN")==false?
+                        
+                        <>
+                        
+                        </>:<>
+                        <button className="flex justify-end bg-[#3C50E0] text-white px-6 py-1 rounded-sm text-center">
                             <img src={leftline} className='text-[#3C50E0] mr-1' alt="Group Icon" />
                             ادامه 
-                          </button>
+                        </button>
+                        </>}
+                        
+                     
+                          
                         </div>
+
+                        
                       ) : (
                         <div className="flex space-x-2 justify-center">
                           <button className="bg-white text-[#6681A9] px-2 py-1 rounded-lg">
@@ -327,6 +362,8 @@ createReq()
           </Table>
         </div>
        </div>
-       </div>
+    </div>
+
+</>
   );
 }

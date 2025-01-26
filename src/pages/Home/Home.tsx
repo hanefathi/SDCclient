@@ -199,7 +199,6 @@ const handleDownload =async(trackId:number) => {
 
 
   return (
-    
 <>
     <div className="p-8 bg-[#eef2ff] min-h-screen md:p-6 lg:p-8">
       {/* Header Section */}
@@ -402,5 +401,5 @@ const handleDownload =async(trackId:number) => {
 
   
 </>
-  );
+);
 }

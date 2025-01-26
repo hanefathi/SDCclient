@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { createContext, useState, useEffect, useContext, ReactNode } from 'react';
 import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
 import Sidebar from './pages/Sidebar/Sidebar';
 import Home from './pages/Home/Home';
@@ -9,16 +9,54 @@ import Navbar from './pages/Navbar/Navbar';
 import FormPage from './pages/FormPage/FormPage';
 import MainPage from './pages/MainPage/MainPage';
 import Login from './pages/Login/Login';
-import Signup from './pages/Singup/Singup';
+// import Signup from './pages/Signup/Signup'; // Fixed typo in 'Signup'
+import { getCookie } from './utills/Cookies/cookieUtils';
+import axios from 'axios';
 import './index.css';
+
+// Define User type
+interface User {
+  id: string;
+  // Add other relevant user properties here
+}
+
+// Define context type
+interface ProfileContextType {
+  user: User | null; // User can be null initially
+}
+
+// Create context with a default value
+export const ProfileContext = createContext<ProfileContextType | undefined>(undefined);
 
 function Layout() {
   const location = useLocation();
   const hideNavbarAndSidebar = location.pathname === "/" || location.pathname === "/login" || location.pathname === "/signup";
+  
+  const { user, setUser } = useContext(ProfileContext) || { user: null, setUser: () => {} }; // Use context
 
+  const fetchData = async () => {
+    const token = getCookie("authToken");
+    try {
+      const response = await axios.get(`${import.meta.env.VITE_HOST}/api/v1/user/me`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+      setUser(response.data);
+    } catch (error) {
+      console.log(error);
+      // Optionally navigate to login or handle the error
+      // navigate("/login");
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  
   return (
     <div className="flex flex-col h-screen">
-      
       {!hideNavbarAndSidebar && (
         <>
           <Navbar />
@@ -26,7 +64,6 @@ function Layout() {
         </>
       )}
       <div className="flex flex-1">
-        
         {!hideNavbarAndSidebar && (
           <div className="flex-1 pt-20 pr-48">
             <Routes>
@@ -44,7 +81,7 @@ function Layout() {
             <Routes>
               <Route path="/" element={<MainPage />} />
               <Route path="/login" element={<Login />} />
-              <Route path="/signup" element={<Signup />} />
+              {/* <Route path="/signup" element={<Signup />} /> */}
             </Routes>
           </div>
         )}
@@ -54,9 +91,13 @@ function Layout() {
 }
 
 export default function App() {
+  const [user, setUser] = useState<User | null>(null); // Initialize user state
+
   return (
-    <Router>
-      <Layout />
-    </Router>
+    <ProfileContext.Provider value={{ user, setUser }}>
+      <Router>
+        <Layout />
+      </Router>
+    </ProfileContext.Provider>
   );
 }

@@ -5,22 +5,10 @@ import { HeaderLayout } from '@components'
 
 export default function AppRoutes() {
  
-  
-
-
-
- 
-
- 
 
 
   return (
     <BrowserRouter>
-      
-        
-
-
-      
     </BrowserRouter>
   )
 }

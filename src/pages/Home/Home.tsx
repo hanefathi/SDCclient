@@ -11,7 +11,8 @@ import { getCookie } from '@/utills/Cookies/cookieUtils';
 import axios from "axios";
 import { ProfileContext } from "@/App";
 import moment from 'moment-jalaali';
-import PdfViewer from "@/utills/ReadPdf/PdfViewer";
+import { PDFDownloadLink, Document, Page, Text   } from '@react-pdf/renderer';
+
 
 export default function Home() {
   const navigate = useNavigate();
@@ -174,8 +175,7 @@ const fetchDataPdf = async (trackId:number) => {
 
 
 const handleDownload =async(trackId:number) => {
- const test =await fetchDataPdf(trackId)
-  const pdfBase64= test
+  const pdfBase64=await fetchDataPdf(trackId)
   const byteCharacters = atob(pdfBase64);
   const byteNumbers = new Array(byteCharacters.length);
   for (let i = 0; i < byteCharacters.length; i++) {
@@ -199,6 +199,10 @@ const handleDownload =async(trackId:number) => {
   document.body.removeChild(link);
 }
 
+const handleShow =async(trackId:number) => {
+  const pdfBase64=await fetchDataPdf(trackId)
+  setPdfbas64view(pdfBase64)
+ }
 
   return (
 <>
@@ -206,13 +210,6 @@ const handleDownload =async(trackId:number) => {
       {/* Header Section */}
       <div className="text-right mr-4">
         <p className='text-2xl font-bold text-[#1C2434]'>  
-          <button onClick={()=>{
-            alert(roles)
-           const j =  roles.includes("ADMIN")
-           alert(j)
-          }}>
-            test
-          </button>
            داشبورد </p>
       </div>
     
@@ -361,7 +358,7 @@ const handleDownload =async(trackId:number) => {
                         
                       ) : (
                         <div className="flex space-x-2 justify-center">
-                          <button className="bg-white text-[#6681A9] px-2 py-1 rounded-lg" onClick={()=>{alert(11)}}>
+                          <button className="bg-white text-[#6681A9] px-2 py-1 rounded-lg" onClick={()=>{handleShow(request.trackingCode)}}>
                             <img src={eye} className="w-6 h-6 ml-2" alt=" Icon" />
                           </button>
                           <button className="bg-white text-[#3C50E0] px-2 py-1 rounded-lg" onClick={()=>{handleDownload(request.trackingCode)}}>
@@ -401,7 +398,37 @@ const handleDownload =async(trackId:number) => {
        </div>
     </div>
 
+
+
+
+
+    {pdfbas64view!=null ? 
+    <>
+    <div  className=" absolute top-[0] z-[20] right-0 bg-[#323639] w-[100%] h-[50px] flex justify-center items-end">
+    <button  className=" absolute top-[0] z-[20] right-0 text-[white] mr-[2rem] mt-[1rem]" onClick={()=>setPdfbas64view(null)}>بستن X</button>
+    </div>
+    <iframe
+    className=" absolute top-[3rem] z-[20]"
+        src={`data:application/pdf;base64,${pdfbas64view}`}
+        width={"100%"}
+        height={"100%"}
+        title="PDF Viewer"
+      /></> :
+      ""}
+    
+
    
 </>
 );
 }
+
+
+
+const MyDocument = ({ base64Data }) => (
+  <Document>
+    <Page size="A4">
+      <Text>This is your PDF content!</Text>
+      {/* You can add more content here */}
+    </Page>
+  </Document>
+);

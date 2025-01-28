@@ -1,4 +1,4 @@
-import React ,{useEffect, useState,useContext} from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { Table, TableHeader, TableBody, TableRow, TableCell } from "@/components/ui/table";
 import addbutton from "@assets/images/addbutton.svg";
 import { useNavigate } from "react-router-dom";
@@ -11,98 +11,129 @@ import { getCookie } from '@/utills/Cookies/cookieUtils';
 import axios from "axios";
 import { ProfileContext } from "@/App";
 import moment from 'moment-jalaali';
-import { PDFDownloadLink, Document, Page, Text   } from '@react-pdf/renderer';
+import PdfViewer from "@/utills/ReadPdf/PdfViewer";
 
+// Define the Request type
+type Req = {
+  status: number;
+  date: string;
+  fullname: string;
+  hoghogh: string;
+  installmentAmount: string;
+  trackingCode: string;
+  signStatus: string;
+  id: number;
+};
 
 export default function Home() {
   const navigate = useNavigate();
+  const { user, setUser } = useContext<any>(ProfileContext);
 
-  const{user,setUser}=useContext(ProfileContext)
-
-  const [pdfbas64view, setPdfbas64view] = useState()
-
-  const stats = {
-    totalRequests: user?.transactions.length,
-    successfulRequests:user?.transactions.filter(transaction => transaction.status === 1).length,
-    unsignedRequests: user?.transactions.filter(transaction => transaction.status === 0).length,
-  };
-
-  // { status: "در انتظار", date: "1403/08/19",fullname: " محمد امینی",
-  //    hoghogh: "100,000,000", 
-  //    installmentAmount: "10,000,000",
-  //     trackingCode: "123456",
-  //      signStatus: "در انتظار امضا",
-  //      id:"1" 
-  // },
-
-
-  const [requestsData, setRequestsData] = useState(
-    [
-    //   { status: 0, date: "1403/08/19", fullname: "محمد امینی", hoghogh: "100,000,000", installmentAmount: "10,000,000", trackingCode: "123456", signStatus: "در انتظار امضا", id: 1 },
-    //   { status: 1, date: "1403/08/18", fullname: "محمد امینی", hoghogh: "200,000,000", installmentAmount: "20,000,000", trackingCode: "654321", signStatus: "امضا شده", id: 2 },
-    //   { status: 2, date: "1403/08/18", fullname: "محمد امینی", hoghogh: "200,000,000", installmentAmount: "20,000,000", trackingCode: "654321", signStatus: "انصراف از امضا", id: 4 },
-    ]
-  );
-  
-  type Req = {
-    status: number; // Changed to number
-    date: string; // Changed from data to date
-    fullname: string;
-    hoghogh: string;
-    installmentAmount: string;
-    trackingCode: string;
-    signStatus: string;
-    id: number;
-  };
-  
-
-  const jalaliDate = (data:string) =>{
-    const jalaliDate = moment(data).format('jYYYY/jM/jD');
-    return jalaliDate;
-  }
-
-  const createReq = (): void => {
-    let arr:any = [];
-    const transactions = user?.transactions;
-    for (let i = 0; i < transactions?.length; i++) { // Fixed loop condition
-      const req: Req = {
-        status: transactions[i].status, // Accessing the status correctly
-        date: jalaliDate(transactions[i].createdAt), // Assuming you meant to include this in the date field
-        fullname: `${transactions[i].fullName}`,
-        hoghogh: `${transactions[i].salaryAmount}`,
-        installmentAmount: transactions[i].deficitAmount,
-        trackingCode:`${transactions[i].trackId}`,
-        signStatus: transactions[i].status === 1 ? "امضا شده" : "در انتظار امضا",
-        id: transactions[i].id,
-      };
-      
-     arr.push(req)
-    }
-
-     setRequestsData(arr); // Correctly updating state
-       setRoles(user.role)
-  };
-  
-
-
-
-
-
-
-
-// const [user, setUser] = useState<object>({})
-
-  const [selectedRecords, setSelectedRecords] = useState<string[]>([]); 
+  const [pdfbas64view, setPdfbas64view] = useState<string | undefined>();
+  const [requestsData, setRequestsData] = useState<Req[]>([]);
+  const [selectedRecords, setSelectedRecords] = useState<number[]>([]);
   const [selectAll, setSelectAll] = useState(false);
-  const [requests, setRequests] = useState(requestsData);
   const [signatureFilter, setSignatureFilter] = useState("");
   const [dateFilter, setDateFilter] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
+  const [roles, setRoles] = useState<string[]>([]);
 
-  const [roles, setRoles] = useState<string[]>([])
-  // setRoles(user?.role)
+  const stats = {
+    totalRequests: user?.transactions.length || 0,
+    successfulRequests: user?.transactions.filter(transaction => transaction.status === 1).length || 0,
+    unsignedRequests: user?.transactions.filter(transaction => transaction.status === 0).length || 0,
+  };
 
-  const filteredRequests = requestsData.filter((request) => {
+  const jalaliDate = (data: string): string => {
+    return moment(data).format('jYYYY/jM/jD');
+  };
+
+  const createReq = (): void => {
+    if (!user?.transactions) return; // Guard clause
+    const arr: Req[] = user.transactions.map(transaction => ({
+      status: transaction.status,
+      date: jalaliDate(transaction.createdAt),
+      fullname: transaction.fullName,
+      hoghogh: transaction.salaryAmount,
+      installmentAmount: transaction.deficitAmount,
+      trackingCode: transaction.trackId,
+      signStatus: transaction.status === 1 ? "امضا شده" : "در انتظار امضا",
+      id: transaction.id,
+    }));
+    setRequestsData(arr);
+    setRoles(user.role);
+  };
+
+  const toggleSelectAll = () => {
+    setSelectAll(prev => !prev);
+    setSelectedRecords(selectAll ? [] : filteredRequests.map(request => request.id));
+  };
+
+  const toggleSelectRecord = (id: number) => {
+    setSelectedRecords(prev =>
+      prev.includes(id) ? prev.filter(recordId => recordId !== id) : [...prev, id]
+    );
+  };
+
+  const handleCheckCookie = () => {
+    const cookieValue = getCookie('authToken');
+    if (!cookieValue) {
+      navigate("/login");
+    }
+  };
+
+  const fetchData = async () => {
+    const token = getCookie("authToken");
+    if (!token) return; // Guard clause
+    try {
+      const response = await axios.get(`${import.meta.env.VITE_HOST}/api/v1/user/me`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      setUser(response.data);
+    } catch (error) {
+      navigate("/login");
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    handleCheckCookie();
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    createReq();
+  }, [user]);
+
+  const fetchDataPdf = async (trackId: number) => {
+    try {
+      const response = await axios.get(`${import.meta.env.VITE_HOST}/api/v1/file/pdf?trackId=${trackId}`);
+      return response.data.pdf; // Assuming this returns the Base64 string
+    } catch (error) {
+      console.error('Error fetching PDF:', error);
+      throw error;
+    }
+  };
+
+  const handleDownload = async (trackId: number) => {
+    const pdfBase64 = await fetchDataPdf(trackId);
+    const byteCharacters = atob(pdfBase64);
+    const byteNumbers = new Uint8Array(byteCharacters.length);
+    for (let i = 0; i < byteCharacters.length; i++) {
+      byteNumbers[i] = byteCharacters.charCodeAt(i);
+    }
+    const blob = new Blob([byteNumbers], { type: 'application/pdf' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `Emzagar-${trackId}.pdf`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const filteredRequests = requestsData.filter(request => {
     return (
       (signatureFilter ? request.signStatus.includes(signatureFilter) : true) &&
       (dateFilter ? request.date === dateFilter : true) &&
@@ -112,97 +143,7 @@ export default function Home() {
         : true)
     );
   });
-  
-  const toggleSelectAll = () => {
-    setSelectAll((prev) => !prev);
-    if (!selectAll) {
-      setSelectedRecords(filteredRequests.map((request) => request.id));
-    } else {
-      setSelectedRecords([]);
-    }
-  };
-  
 
-  const toggleSelectRecord = (id: string) => {
-    setSelectedRecords((prev) =>
-      prev.includes(id)
-        ? prev.filter((recordId) => recordId !== id)
-        : [...prev, id]
-    );
-  };
-
-const handleCheckCookie = () => {
-  const cookieValue = getCookie('authToken');
-  if (cookieValue) {
-    return
-  } else {
-    navigate("/login")
-  }
-};
-
-const fetchData= async()=>{
-  const token = getCookie("authToken"); // Example token
-  try {
-      const response =axios.get(import.meta.env.VITE_HOST + `/api/v1/user/me`, {
-          headers: {
-              'Authorization': `Bearer ${token}`
-          }
-      });
-    setUser((await response).data)
-
-  } catch (error) {
-    navigate("/login")
-      console.log(error);
-  }
-}
-
-useEffect(() => {
-  fetchData()
-createReq()
-
-}, []);
-  
-
-const fetchDataPdf = async (trackId:number) => {
-  try {
-    const response = await axios.get(`${import.meta.env.VITE_HOST}/api/v1/file/pdf?trackId=${trackId}`);
-    return response.data.pdf; // Assuming this returns the Base64 string
-  } catch (error) {
-    console.error('Error fetching PDF:', error);
-    throw error; // Rethrow the error to handle it in the calling function
-  }
-};
-
-
-const handleDownload =async(trackId:number) => {
-  const pdfBase64=await fetchDataPdf(trackId)
-  const byteCharacters = atob(pdfBase64);
-  const byteNumbers = new Array(byteCharacters.length);
-  for (let i = 0; i < byteCharacters.length; i++) {
-    byteNumbers[i] = byteCharacters.charCodeAt(i);
-  }
-  const byteArray = new Uint8Array(byteNumbers);
-
-  // Create a Blob from the byte array
-  const blob = new Blob([byteArray], { type: 'application/pdf' });
-
-  // Create a link element
-  const link = document.createElement('a');
-  link.href = URL.createObjectURL(blob);
-  link.download = `Emzagar-${trackId}.pdf`; // Specify the file name
-
-  // Append to the body and trigger click
-  document.body.appendChild(link);
-  link.click();
-
-  // Clean up and remove the link
-  document.body.removeChild(link);
-}
-
-const handleShow =async(trackId:number) => {
-  const pdfBase64=await fetchDataPdf(trackId)
-  setPdfbas64view(pdfBase64)
- }
 
   return (
 <>
@@ -210,6 +151,13 @@ const handleShow =async(trackId:number) => {
       {/* Header Section */}
       <div className="text-right mr-4">
         <p className='text-2xl font-bold text-[#1C2434]'>  
+          <button onClick={()=>{
+            alert(roles)
+           const j =  roles.includes("ADMIN")
+           alert(j)
+          }}>
+            test
+          </button>
            داشبورد </p>
       </div>
     
@@ -358,7 +306,7 @@ const handleShow =async(trackId:number) => {
                         
                       ) : (
                         <div className="flex space-x-2 justify-center">
-                          <button className="bg-white text-[#6681A9] px-2 py-1 rounded-lg" onClick={()=>{handleShow(request.trackingCode)}}>
+                          <button className="bg-white text-[#6681A9] px-2 py-1 rounded-lg" onClick={()=>{alert(11)}}>
                             <img src={eye} className="w-6 h-6 ml-2" alt=" Icon" />
                           </button>
                           <button className="bg-white text-[#3C50E0] px-2 py-1 rounded-lg" onClick={()=>{handleDownload(request.trackingCode)}}>
@@ -398,37 +346,7 @@ const handleShow =async(trackId:number) => {
        </div>
     </div>
 
-
-
-
-
-    {pdfbas64view!=null ? 
-    <>
-    <div  className=" absolute top-[0] z-[20] right-0 bg-[#323639] w-[100%] h-[50px] flex justify-center items-end">
-    <button  className=" absolute top-[0] z-[20] right-0 text-[white] mr-[2rem] mt-[1rem]" onClick={()=>setPdfbas64view(null)}>بستن X</button>
-    </div>
-    <iframe
-    className=" absolute top-[3rem] z-[20]"
-        src={`data:application/pdf;base64,${pdfbas64view}`}
-        width={"100%"}
-        height={"100%"}
-        title="PDF Viewer"
-      /></> :
-      ""}
-    
-
    
 </>
 );
 }
-
-
-
-const MyDocument = ({ base64Data }) => (
-  <Document>
-    <Page size="A4">
-      <Text>This is your PDF content!</Text>
-      {/* You can add more content here */}
-    </Page>
-  </Document>
-);

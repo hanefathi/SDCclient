@@ -7,6 +7,7 @@ import path from 'path';
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  
   plugins: [react()],
   resolve: {
     alias: {
@@ -22,6 +23,10 @@ export default defineConfig({
     }
   },
   server: {
-    port: 3000
+    port: 3000,
+    watch: {
+      usePolling: true, // This helps in environments where file changes are not detected
+      interval: 100, // Adjust the polling interval if necessary
+    },
   }
 })

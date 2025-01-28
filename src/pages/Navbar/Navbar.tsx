@@ -9,45 +9,52 @@ import { ProfileContext } from '@/App'; // Ensure correct import path
 import { Button } from 'antd';
 import axios from 'axios';
 
+interface User {
+  fullName?: string;
+  phoneNumber?: string;
+  profileImage?: string;
+}
+
 export default function Navbar() {
-  const context = useContext(ProfileContext);
   const [dateTime, setDateTime] = useState<string>('');
-  const [fullName, setFullName] = useState<any>(undefined);
-  const [phoneNumber, setPhoneNumber] = useState<any>("");
-  const [profileImage, setProfileImage] = useState<any>(Profile); // Default profile image
-  const { user } = context;
+  const [fullName, setFullName] = useState<string | undefined>(undefined);
+  const [phoneNumber, setPhoneNumber] = useState<string>("0912XXXXXXX");
+  const [profileImage, setProfileImage] = useState<string>(Profile); // Default profile image
+  const { user } = useContext(ProfileContext) as { user: User };
 
   useEffect(() => {
     // Set initial state from user context
-    setFullName(user?.fullName);
-    setPhoneNumber(user?.phoneNumber || "0912XXXXXXX");
+    if (user) {
+      setFullName(user.fullName);
+      setPhoneNumber(user.phoneNumber || "0912XXXXXXX");
 
-    const fetchProfileImage = async () => {
-      try {
-        const response = await axios.get(user?.profileImage);
-        setProfileImage(response.data.image);
-      } catch (error) {
-        console.error(error);
-      }
-    };
+      const fetchProfileImage = async () => {
+        try {
+          const response = await axios.get(user.profileImage);
+          setProfileImage(response.data.image);
+        } catch (error) {
+          console.error(error);
+        }
+      };
 
-    fetchProfileImage();
+      fetchProfileImage();
+    }
 
     const now = moment();
     const formattedDate = now.format('jYYYY/jMM/jDD HH:mm');
     setDateTime(formattedDate);
-  }, []); // Dependency on user to re-run effect if user changes
+  }, [user]); // Dependency on user to re-run effect if user changes
 
   return (
-    <nav className="fixed top-0 left-0 right-40 z-10 flex justify-between items-center bg-[#FFFFFF] h-20 px-12 shadow-md" style={{direction:'rtl'}}>
-      <div className="flex items-left" style={{direction:"ltr"}}>
+    <nav className="fixed top-0 left-0 right-40 z-10 flex justify-between items-center bg-[#FFFFFF] h-20 px-12 shadow-md" style={{ direction: 'rtl' }}>
+      <div className="flex items-left" style={{ direction: "ltr" }}>
         <div className="flex flex-col text-center">
           <span className="text-black">{fullName}</span>
           <Button className="text-[#8A99AF] border-none text-xs">
             {phoneNumber}
           </Button>
         </div>
-        <img src={'data:image/jpeg;base64,'+profileImage} alt="User Profile" className="w-12 h-12 rounded-full" />
+        <img src={'data:image/jpeg;base64,' + profileImage} alt="User Profile" className="w-12 h-12 rounded-full" />
       </div>
 
       <div className="flex items-center space-x-1">

@@ -31,11 +31,10 @@ export default function Login() {
   const inputRefs = useRef<HTMLInputElement[]>([]);
   const [timer, setTimer] = useState(120);
   const [status, setStatus] = useState<number>(1)
-
-    const [otp, setOtp] = useState<string | null>("");
-    const [responseData, setResponseData] = useState(null);
-    const [error, setError] = useState(null);
-    const [responseCode, setResponseCode] = useState<string | null >("")
+  const [otp, setOtp] = useState<string | null>("");
+  const [responseData, setResponseData] = useState(null);
+  const [error, setError] = useState(null);
+  const [responseCode, setResponseCode] = useState<string | null >("")
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
@@ -63,8 +62,6 @@ export default function Login() {
     }
     return
   };
-
-  
 
 const handleSetCookie = (cookieName:string,cookieValue:string) => {
   setCookie(cookieName, cookieValue, import.meta.env.VITE_COOKI_EXPIRED); // 1 day expiration
@@ -120,9 +117,9 @@ const handleSetCookie = (cookieName:string,cookieValue:string) => {
 
 
 const fetchData = async () => {
-  const token = null; // Example token
+  const token = getCookie("authToken"); // Example token
   try {
-      const response = await axios.post(import.meta.env.VITE_HOST+`/auth/signin`, {
+      const response = await axios.post(import.meta.env.VITE_HOST+`/api/v1/auth/signin`, {
           // Your request body goes here
           phoneNumber: mobile,
           otp: otp

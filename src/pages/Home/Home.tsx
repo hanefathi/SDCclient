@@ -66,6 +66,11 @@ export default function Home() {
     return moment(data).format('jYYYY/jM/jD');
   };
 
+
+  function formatNumber(amount:number) {
+    return amount.toLocaleString();
+  }
+
   const createReq = (): void => {
     if (!user?.transactions) return; // Guard clause
   
@@ -73,8 +78,8 @@ export default function Home() {
       status: transaction.status,
       date: jalaliDate(transaction.createdAt),
       fullname: transaction.fullName,
-      hoghogh: transaction.salaryAmount,
-      installmentAmount: transaction.deficitAmount,
+      hoghogh: formatNumber(transaction.salaryAmount) ,
+      installmentAmount: formatNumber(transaction.deficitAmount) ,
       trackingCode: transaction.trackId,
       signStatus: transaction.status === 1 ? "امضا شده" : "در انتظار امضا",
       id: transaction.id,
@@ -84,7 +89,7 @@ export default function Home() {
       status: transaction.status,
       date: jalaliDate(transaction.createdAt),
       fullname: transaction.fullName,
-      hoghogh: transaction.salaryAmount,
+      hoghogh: toLocaleString(transaction.salaryAmount),
       installmentAmount: transaction.deficitAmount,
       trackingCode: transaction.trackId,
       signStatus: transaction.status === 1 ? "امضا شده" : "در انتظار امضا",
@@ -313,7 +318,7 @@ export default function Home() {
               <TableRow className="bg-[#1C2434] text-white text-center">
                 <TableCell > </TableCell>
                 <TableCell className="text-left px-5">وضعیت امضا</TableCell>
-                <TableCell>مبلغ قسط (ریال)</TableCell>
+                <TableCell>مبلغ کسری (ریال)</TableCell>
                 <TableCell> حقوق ماهیانه (ریال)</TableCell>
                 <TableCell> نام و نام خانوادگی </TableCell>
                 <TableCell>تاریخ ثبت</TableCell>
@@ -451,7 +456,7 @@ export default function Home() {
               <TableRow className="bg-[#1C2434] text-white text-center">
                 <TableCell > </TableCell>
                 <TableCell className="text-left px-5">وضعیت امضا</TableCell>
-                <TableCell>مبلغ قسط (ریال)</TableCell>
+                <TableCell>مبلغ کسری (ریال)</TableCell>
                 <TableCell> حقوق ماهیانه (ریال)</TableCell>
                 <TableCell> نام و نام خانوادگی </TableCell>
                 <TableCell>تاریخ ثبت</TableCell>

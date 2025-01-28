@@ -29,38 +29,7 @@ function Layout() {
   const location = useLocation();
   const hideNavbarAndSidebar = location.pathname === "/" || location.pathname === "/login" || location.pathname === "/signup";
   const [user, setUser] = useState<User | null>(null); // Initialize user state to null
-  const [loading, setLoading] = useState<boolean>(true); // Add loading state
 
-  const fetchData = async () => {
-    const token = getCookie("authToken");
-    if (!token) {
-      setUser(null);
-      setLoading(false); // Set loading to false if no token
-      return;
-    }
-    
-    try {
-      const response = await axios.get(`${import.meta.env.VITE_HOST}/api/v1/user/me`, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-      });
-      setUser(response.data);
-    } catch (error) {
-      console.log(error);
-      setUser(null); // Set user to null on error
-    } finally {
-      setLoading(false); // Ensure loading is false after fetch
-    }
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  if (loading) {
-    return <div>Loading...</div>; // Render loading state
-  }
 
   return (
     <ProfileContext.Provider value={{ user, setUser }}>

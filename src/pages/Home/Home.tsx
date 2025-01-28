@@ -320,7 +320,7 @@ export default function Home() {
               <TableRow className="bg-[#1C2434] text-white text-center">
                 <TableCell > </TableCell>
                 <TableCell className="text-left px-5">وضعیت امضا</TableCell>
-                <TableCell>مبلغ قسط (ریال)</TableCell>
+                <TableCell>مبلغ کسری (ریال)</TableCell>
                 <TableCell> حقوق ماهیانه (ریال)</TableCell>
                 <TableCell> نام و نام خانوادگی </TableCell>
                 <TableCell>تاریخ ثبت</TableCell>
@@ -458,7 +458,7 @@ export default function Home() {
               <TableRow className="bg-[#1C2434] text-white text-center">
                 <TableCell > </TableCell>
                 <TableCell className="text-left px-5">وضعیت امضا</TableCell>
-                <TableCell>مبلغ قسط (ریال)</TableCell>
+                <TableCell>مبلغ کسری (ریال)</TableCell>
                 <TableCell> حقوق ماهیانه (ریال)</TableCell>
                 <TableCell> نام و نام خانوادگی </TableCell>
                 <TableCell>تاریخ ثبت</TableCell>

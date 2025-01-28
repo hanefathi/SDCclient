@@ -21,6 +21,7 @@ export default function Navbar() {
   const [phoneNumber, setPhoneNumber] = useState<string>("0912XXXXXXX");
   const [profileImage, setProfileImage] = useState<string>(Profile); // Default profile image
   const { user } = useContext(ProfileContext) as { user: User };
+  
 
   useEffect(() => {
     // Set initial state from user context
@@ -46,6 +47,9 @@ export default function Navbar() {
   }, [user]); // Dependency on user to re-run effect if user changes
 
   return (
+    <>
+
+
     <nav className="fixed top-0 left-0 right-40 z-10 flex justify-between items-center bg-[#FFFFFF] h-20 px-12 shadow-md" style={{ direction: 'rtl' }}>
       <div className="flex items-left" style={{ direction: "ltr" }}>
         <div className="flex flex-col text-center">
@@ -71,5 +75,6 @@ export default function Navbar() {
         </div>
       </div>
     </nav>
+    </>
   );
 }

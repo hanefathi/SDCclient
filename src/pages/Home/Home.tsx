@@ -12,6 +12,9 @@ import axios from "axios";
 import { ProfileContext } from "@/App";
 import moment from 'moment-jalaali';
 
+// axios.defaults.headers.common['Cache-Control'] = 'no-cache';
+// axios.defaults.headers.common['Pragma'] = 'no-cache';
+// axios.defaults.headers.common['Expires'] = '0';
 
 // Define the Request type
 interface Transaction {
@@ -91,6 +94,32 @@ switch (status) {
 }
 return text
 }
+
+
+
+
+const handleDeleteTransaction=async(id:number)=>{
+  const token = getCookie("authToken"
+  );
+  if (!token) return; // Guard clause
+  try {
+    const response = await axios.delete(`${import.meta.env.VITE_HOST}/api/v1/transaction/${id}`, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+    alert("عملیات با موفقیت حدف گردید")
+    fetchData()
+    
+  } catch (error) {
+    console.error(error);
+  }
+  
+  
+}
+
+
+
 
   const createReq = (): void => {
     if (!user?.transactions) return; // Guard clause
@@ -403,6 +432,13 @@ return text
                         <>
                         
                         </>:<>
+
+
+                        <button className="flex justify-end bg-[#e0553c] text-white px-6 py-1 rounded-sm text-center" onClick={()=>handleDeleteTransaction(request.id)}>
+                            <img src={leftline} className='text-[#db5c35] mr-1' alt="Group Icon" />
+                            حذف 
+                        </button>
+
                         <button className="flex justify-end bg-[#3C50E0] text-white px-6 py-1 rounded-sm text-center" onClick={()=>handleSigningTransaction(request.id)}>
                             <img src={leftline} className='text-[#3C50E0] mr-1' alt="Group Icon" />
                             ادامه 
@@ -430,6 +466,10 @@ return text
                           <button className="bg-white text-[#6681A9] px-2 py-1 rounded-lg" onClick={()=>{handlePdf(request.trackingCode,true)}}>
                             <img src={eye} className="w-6 h-6 ml-2" alt=" Icon" />
                           </button>
+
+
+                       
+
                           <button className="bg-white text-[#3C50E0] px-2 py-1 rounded-lg" onClick={()=>{handlePdf(request.trackingCode,false)}}>
                             <img
                               src={frame}

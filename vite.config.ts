@@ -23,6 +23,7 @@ export default defineConfig({
     }
   },
   server: {
+    host: '0.0.0.0', // This allows access from any IP address
     port: 3000,
     watch: {
       usePolling: true, // This helps in environments where file changes are not detected

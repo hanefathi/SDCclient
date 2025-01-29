@@ -13,9 +13,18 @@ import Settings from '@assets/images/Settings.svg';
 import Logoutwhite from '@assets/images/Logoutwhite.svg';
 import Logout from '@assets/images/Logout.svg';
 import headphone from '@assets/images/headphone.svg';
-
+import { getCookie,deleteCookie } from '@/utills/Cookies/cookieUtils';
+import Cookies from 'js-cookie';
 
 export default function Sidebar() {
+
+
+
+  const handleDeleteCookie = () => {
+    Cookies.remove("authToken")
+    return
+};
+
   return (
     <aside className="fixed right-0 h-full bg-[#1C2434] w-55 p-5 z-20 rounded-10-3xl rounded-tl-3xl rounded-bl-3xl flex flex-col">
       <div className="flex justify-end mb-14">
@@ -110,7 +119,13 @@ export default function Sidebar() {
         </li>
        <li>
           
+{/* <button  onClick={()=>handleDeleteCookie()}>
+  delete cookie
+</button> */}
+
+
           <Link
+          onClick={()=>handleDeleteCookie()}
             to="/login"
             className={`flex items-center text-sm ${
               location.pathname === "/login" ? "text-white" : "text-[#8A99AF]"

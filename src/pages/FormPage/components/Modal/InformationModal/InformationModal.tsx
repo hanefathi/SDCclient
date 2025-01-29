@@ -2,12 +2,14 @@ import React, { useState } from "react";
 import { Dialog, DialogContent, DialogOverlay } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { ModalProps } from "./Modal";
-import { useNavigate } from "react-router-dom";
 import SuccessModal from "./../SuccessModal/SuccessModal"; 
 import axios from "axios";
 import { getCookie } from "@/utills/Cookies/cookieUtils";
+import { useNavigate } from "react-router-dom";
+
 
 const InformationModal: React.FC<ModalProps> = ({ isOpen, onClose, data, onSignDocument }) => {
+  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false); 
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false); 
 
@@ -45,8 +47,8 @@ const createTransaction=async()=>{
         'Authorization': `Bearer ${token}`
       }
     });
-    alert("Transaction created successfully")
-    window.location("/home")
+    alert("عملیات با موفقیت ثبت شد")
+    navigate("/home")
   } catch (error) {
     console.error(error);
   }

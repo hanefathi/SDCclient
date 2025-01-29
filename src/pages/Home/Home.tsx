@@ -146,9 +146,10 @@ const handleDeleteTransaction=async(id:number)=>{
       id: transaction.id,
     }));
   
-    setRequestsData(arr);
+   
     setRoles(user.role);
-    setManagerReq(managerArr)
+     setRequestsData(arr.reverse());
+    setManagerReq(managerArr.reverse())
   };
 
   const toggleSelectAll = () => {
@@ -345,7 +346,9 @@ const handleDeleteTransaction=async(id:number)=>{
             </div>
           </div>
         </div>
-        <div className="w-60 h-60 ml-4 ">
+
+        {roles.includes("ADMIN") && <>
+         <div className="w-60 h-60 ml-4 ">
             <button 
               onClick={() => navigate('/form')}
               className=" border-radius bg-white text-black text-sm font-bold w-60 h-48 mt-6 border border-dashed border-4 border-gray-300"
@@ -355,6 +358,11 @@ const handleDeleteTransaction=async(id:number)=>{
               <span >  ساخت فرم </span>
             </button>
             </div>
+        </>}
+       
+
+
+            
         </div>
 
 

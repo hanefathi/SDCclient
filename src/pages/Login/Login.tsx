@@ -35,6 +35,8 @@ export default function Login() {
   const [responseData, setResponseData] = useState(null);
   const [error, setError] = useState(null);
   const [responseCode, setResponseCode] = useState<string | null >("")
+  const [isSignUp, setIsSignUp] = useState(true)
+
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
@@ -57,7 +59,13 @@ export default function Login() {
       e.preventDefault();
     setIsCodeSent(true);
     setTimer(120); 
-    fetchData() 
+
+    if(isSignUp==true){
+      fetchSignUp()
+      return
+    }
+
+    fetchLogin() 
     return
     }
     return
@@ -85,11 +93,11 @@ const handleSetCookie = (cookieName:string,cookieValue:string) => {
     }
   };
 
-  const handleVerifyCode = (e: React.FormEvent) => {
+  const handleVerifyCode = (e: React.FormEvent | null | undefined |any) => {
     e.preventDefault();
     const code = verificationCode.join("");
     if (code === otp) {
-      fetchData()
+      fetchLogin()
       navigate("/home"); 
     } else {
       alert("کد وارد شده صحیح نیست.");
@@ -116,7 +124,7 @@ const handleSetCookie = (cookieName:string,cookieValue:string) => {
 
 
 
-const fetchData = async () => {
+const fetchLogin = async () => {
   const token = getCookie("authToken"); // Example token
   try {
       const response = await axios.post(import.meta.env.VITE_HOST+`/api/v1/auth/signin`, {
@@ -126,7 +134,7 @@ const fetchData = async () => {
       }, );
 
       // Type assertion for response.data
-      if (otp==""){
+      if (otp==""||otp==null|| otp==undefined){
         const res: OtpResponse = response.data;
         alert(res.otp)
         setOtp(res.otp);
@@ -141,6 +149,27 @@ const fetchData = async () => {
 
   } catch (error) {
       console.log(error)
+  }
+};
+
+
+
+const fetchSignUp = async () => {
+  // const token = getCookie("authToken"); // Example token
+  try {
+      const response = await axios.post(import.meta.env.VITE_HOST+`/api/v1/auth/signup`, {
+          // Your request body goes here
+          phoneNumber: mobile,
+          nationalCode: password
+      }, );
+
+    alert("کاربر با موفقیت ثبت نام شد" + response.data.otp)
+    setOtp(response.data.otp)
+   setIsSignUp(false)
+   
+
+  } catch (error) {
+      alert(error)
   }
 };
 
@@ -207,7 +236,9 @@ const fetchData = async () => {
               <button
               onClick={()=>{
                 setMobile("")
+                setPassword("")
                 setOtp("")
+                setIsSignUp(false)
                 setIsCodeSent(!isCodeSent)
               }}
                 type="submit"
@@ -225,6 +256,11 @@ const fetchData = async () => {
             </form>
           </div>
         ) : (
+
+
+
+
+
           <div className="absolute p-8 rounded-lg w-3/5 z-10 mt-16 ">
             <h2 className="text-3xl font-bold text-black text-center mb-4">
               به <span className="text-[#3C50E0]">فرم نگار</span> خوش آمدید
@@ -235,7 +271,7 @@ const fetchData = async () => {
             <form onSubmit={(e)=>{handleLogin(e,true)}}>
               <div className="mb-4">
                 <label
-                  htmlFor="mobile"
+                 
                   className="block text-sm font-semibold text-[#8A99AF] text-right"
                 >
                    شماره تلفن
@@ -250,6 +286,34 @@ const fetchData = async () => {
                   required
                 />
               </div>
+
+            {isSignUp ? <>
+            
+              <div className="mb-4">
+                <label
+               
+                  className="block text-sm font-semibold text-[#8A99AF] text-right"
+                >
+                   کد ملی
+                </label>
+                <input
+                  type="text"
+                  id="mobile"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full p-3 border text-[#8A99AF] rounded-md mt-2 text-right"
+                  placeholder="002XXXXXXX"
+                  required
+                />
+              </div>
+
+            </>:
+            <>
+            
+            </>}
+
+            
+
 
               {/* <div className="mb-2">
                 <label
@@ -272,8 +336,8 @@ const fetchData = async () => {
 
               <div className="mb-8 flex items-center justify-end">
                 <div className="flex items-center">
-                  <button className="text-sm font-semibold text-[#3C50E0] mr-2">
-                    رمز عبورم را فراموش کردم
+                  <button className="text-sm font-semibold text-[#3C50E0] mr-2" onClick={()=>setIsSignUp(!isSignUp)}>
+                    {isSignUp ? "ورود با شماره تماس":"حساب ندارید ؟ ثبت نام کنید"}
                   </button>
                 </div>
                 
@@ -322,7 +386,7 @@ const fetchData = async () => {
                 type="submit"
                 className="w-full py-3 bg-[#3C50E0] text-white font-semibold rounded-md hover:bg-[#2F44C2] transition duration-300"
               >
-                ورود
+               {isSignUp ? "عضویت" : "ورود"} 
               </button>
             </form>
 

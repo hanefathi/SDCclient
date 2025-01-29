@@ -73,6 +73,25 @@ export default function Home() {
   }
 
 
+  
+const handleStatusSigned=(status:number)=>{
+let text;
+switch (status) {
+  case 1:
+    text="امضا شده"
+    break;
+
+    case 2:
+      text="انصراف از امضا"
+      break;
+
+  default:
+  text="در انتظار امضا"
+    break;
+}
+return text
+}
+
   const createReq = (): void => {
     if (!user?.transactions) return; // Guard clause
   
@@ -83,7 +102,7 @@ export default function Home() {
       hoghogh:formatNumber(transaction.salaryAmount) ,
       installmentAmount:formatNumber(transaction.deficitAmount) ,
       trackingCode: transaction.trackId,
-      signStatus: transaction.status === 1 ? "امضا شده" : "در انتظار امضا",
+      signStatus: handleStatusSigned(transaction.status) ,
       id: transaction.id,
     }));
 
@@ -94,7 +113,7 @@ export default function Home() {
       hoghogh:formatNumber(transaction.salaryAmount) ,
       installmentAmount:formatNumber(transaction.deficitAmount) ,
       trackingCode: transaction.trackId,
-      signStatus: transaction.status === 1 ? "امضا شده" : "در انتظار امضا",
+      signStatus: handleStatusSigned(transaction.status) ,
       id: transaction.id,
     }));
   
@@ -140,6 +159,34 @@ export default function Home() {
       console.error(error);
     }
   };
+
+
+
+
+  const handleSigningTransaction = async (id:number) => {
+    const token = getCookie("authToken");
+    if (!token) return; // Guard clause
+    const data = {
+      "username":"sp_zamanian",
+      "password":"W2$i%43REd!",
+      "apiVersion":null
+  }
+
+    try {
+      const response = await axios.post(`${import.meta.env.VITE_HOST}/api/v1/transaction/gatewaylink/`+id,data, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      window.location.href = response.data.gatewayLink;
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+
+
+
 
   useEffect(() => {
     handleCheckCookie();
@@ -286,10 +333,7 @@ export default function Home() {
 
 
 {/* Manager Tables */}
-
-
 {roles.includes("ADMIN") && <>
-
   <div className="bg-white p-3 border-radius rounded-sm">
         <div className="flex justify-between items-center mb-4 ">
           <button 
@@ -349,7 +393,7 @@ export default function Home() {
                 return (
                   <TableRow key={request.id}>
                     <TableCell>
-                      {request.signStatus === "در انتظار امضا" ? (
+                      {request.signStatus === "در انتظار امضا" ||  request.signStatus === "انصراف از امضا" ? (
 
                       
                         <div className="flex items-center justify-center text-center">
@@ -359,7 +403,7 @@ export default function Home() {
                         <>
                         
                         </>:<>
-                        <button className="flex justify-end bg-[#3C50E0] text-white px-6 py-1 rounded-sm text-center">
+                        <button className="flex justify-end bg-[#3C50E0] text-white px-6 py-1 rounded-sm text-center" onClick={()=>handleSigningTransaction(request.id)}>
                             <img src={leftline} className='text-[#3C50E0] mr-1' alt="Group Icon" />
                             ادامه 
                         </button>
@@ -424,12 +468,8 @@ export default function Home() {
 </>
 }
 
-
-
-
 {/* // Request Tables */}
-
-      <div className="bg-white p-3 border-radius rounded-sm">
+<div className="bg-white p-3 border-radius rounded-sm">
         <div className="flex justify-between items-center mb-4 ">
           <button 
           className='flex items-center text-[#8A99AF] px-2 py-1 border-radius rounded-sm '
@@ -558,7 +598,7 @@ export default function Home() {
             </TableBody>
           </Table>
         </div>
-       </div>
+</div>
 
 
     </div>

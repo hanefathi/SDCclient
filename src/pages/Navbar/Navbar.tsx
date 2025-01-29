@@ -31,7 +31,7 @@ export default function Navbar() {
 
       const fetchProfileImage = async () => {
         try {
-          const response = await axios.get(!user?.profileImage);
+          const response = await axios.get(user?.profileImage);
           setProfileImage(response.data.image);
         } catch (error) {
           console.error(error);

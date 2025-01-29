@@ -28,7 +28,7 @@ export default function MainPage() {
           <div className="flex justify-between items-center space-x-0 bg-[#3C50E0] border-radius rounded-sm w-32 h-10">
             <button
               className="flex justify-between items-center border-radius rounded-full text-white pl-5 text-sm font-semibold mt-0"
-              onClick={handleSignup}
+              onClick={handleLogin}
             >
               ثبت نام
             </button>

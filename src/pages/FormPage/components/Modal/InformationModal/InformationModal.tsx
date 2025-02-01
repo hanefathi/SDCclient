@@ -6,6 +6,13 @@ import SuccessModal from "./../SuccessModal/SuccessModal";
 import axios from "axios";
 import { getCookie } from "@/utills/Cookies/cookieUtils";
 import { useNavigate } from "react-router-dom";
+import { jsPDF } from 'jspdf';
+import 'jspdf-autotable';
+import yekan from "./Yekan"
+
+var font = yekan;
+
+
 
 
 const InformationModal: React.FC<ModalProps> = ({ isOpen, onClose, data, onSignDocument }) => {
@@ -82,11 +89,68 @@ const handleSigningTransaction = async (id:number) => {
 
 
   const handleSigning = async() =>{
-  createTransaction()
+    generatePDF()
+  // createTransaction()
   return
   }
 
   
+
+  const generatePDF = () => {
+    const doc = new jsPDF();
+
+   var image = URL.createObjectURL(data.logo)
+
+  if(image!=null){
+   doc.addImage(image,doc.internal.pageSize.width - 42,10,35,35)
+  }
+
+
+    // Add the font to the VFS (make sure 'font' is defined)
+    doc.addFileToVFS('Vazir.ttf', font);
+    doc.addFont('Vazir.ttf', 'Vazir', 'normal'); // Register the font
+
+    // Set the font and size
+    doc.setFont('Vazir');
+    doc.setFontSize(10); // Set font size
+
+    doc.text(`شرکت ${data.companyname?data.companyname:"......."}`, doc.internal.pageSize.width - 10, 85, { align: 'right' });
+  doc.text("با سلام و احترام", doc.internal.pageSize.width - 10, 100, { align: 'right' });
+    // Write Persian text
+    const persianText = `
+بدینوسیله بنا بر تقاضای جناب آقای / سرکار خانم ${data.name ? data.name : "......"} به شماره ملی ${data.nationalcode ? data.nationalcode : "........."} گواهی می‌شود نامبرده فوق در شرکت ${data.companyname ? data.companyname : ".........."} از تاریخ ................ می‌باشد و حقوق و مزایای ناخالص ایشان به صورت ماهیانه به مبلغ ${data.hoghogh ? data.hoghogh : "........"} ریال است. با توجه به مبلغ ماهیانه قسط به میزان ${data.ghest ? data.ghest : "......"} تومان به موجب ضمانت فوق، این شرکت تعهد می‌نماید چنانچه وام گیرنده به هر علت از پرداخت اقساط در سر رسید معین خودداری نماید با گزارش کتبی بانک تا زمان پایان قرارداد وی با این شرکت، مبلغ موردنظر را از حقوق وی طبق قانون کسر و به بانک پرداخت کند`;
+
+    // Split text into lines automatically
+    const splitText = doc.splitTextToSize(persianText, 235); // Adjust width as needed
+
+    // Set starting y position
+    const startY = 110; // Adjust this value as needed
+
+    // Add a greeting text aligned to the right
+
+
+    // Write the main text aligned to the right
+    splitText.forEach((line:any, index:any) => {
+        // Calculate the x position for right alignment
+        const xPosition = doc.internal.pageSize.width - 10; // Adjust as needed
+        doc.text(line, xPosition, startY + (index * 10), { align: 'right' }); // Right alignment
+    });
+
+    // Get the base64 string of the PDF
+    const pdfBase64 = doc.output('datauristring');
+
+    // Alert the base64 string
+    const cleanedSuffixImage = pdfBase64.replace(/^data:application\/pdf;filename=generated\.pdf;base64,/, '');
+    const pdf = "data:application/pdf;base64," + cleanedSuffixImage;
+    alert(pdf);
+
+    // Save the PDF
+    doc.save("document.pdf");
+};
+
+
+
+
   return (
     <>
       <Dialog open={isOpen} onOpenChange={onClose}>

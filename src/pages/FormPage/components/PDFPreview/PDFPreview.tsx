@@ -16,8 +16,6 @@ const PdfDocument = ({
   hoghogh,
   ghest,
   logo,
-  gender,
-  jobStatus,
   date,
 }: {
   name: string;
@@ -26,40 +24,40 @@ const PdfDocument = ({
   hoghogh: string;
   ghest: string;
   logo: File | null;
-  gender:string;
-  jobStatus:string;
-  date:string;
+  date: string;
 }) => (
   <Document>
     <Page style={{ fontFamily: "Vazirmatn", padding: "20px", textAlign: "right" }}>
-      <View style={{margin: "10px",fontSize: "14px",lineHeight: 1.6,textAlign: "right"}}>
-       <View style={{ display: "flex", flexDirection: "row-reverse", alignItems: "center" }}>
-        <Text style={{ maxWidth: "80%" }}>
-          <div className="flex items-center justify-end mr-2">
-            <p className="text-right mr-4" > شرکت {companyname}</p>
-            <img
-              src={logo ? URL.createObjectURL(logo) : Profile}
-              className="w-12 h-12"
-              alt="Logo"
-            />
-          </div>
-          <p className="m-5">با سلام و احترام </p>
-        </Text>
-        
+      <View style={{ margin: "10px", fontSize: "14px", lineHeight: 1.6, textAlign: "right" }}>
+        <View style={{ display: "flex", flexDirection: "row-reverse", alignItems: "center" }}>
+          <Text style={{ maxWidth: "80%" }}>
+            <div className="flex items-center justify-end mr-2">
+              <p className="text-right mr-4"> شرکت {companyname}</p>
+              <img
+                src={logo ? URL.createObjectURL(logo) : Profile}
+                className="w-12 h-12"
+                alt="Logo"
+              />
+            </div>
+            <p className="m-5">با سلام و احترام </p>
+          </Text>
         </View>
-        <Text style={{ wordWrap: "break-word", maxWidth: "80%", textAlign: "right" }}>
+        <Text style={{ maxWidth: "80%", textAlign: "right" }}>
           <p className="m-5 flex justify-center">
-            بدینوسیله بنا بر تقاضای جناب آقای / سرکار خانم
-            {name ? name : <> ................. </>} به شماره ملی
-            {nationalcode ? nationalcode : <> ................. </>} گواهی می‌شود نامبرده فوق در شرکت
-            {companyname ? companyname : <> ................ </>} از تاریخ
-            {date ? date : <> ................ </>}  می‌باشد و حقوق و مزایای ناخالص ایشان به صورت ماهیانه به مبلغ
-            {hoghogh ? hoghogh : <> .............. </>} ریال است. با توجه به مبلغ ماهیانه قسط به میزان
-            {ghest ? ghest : <> .............. </>} تومان به موجب ضمانت فوق، این شرکت تعهد
+            {`
+          بدینوسیله بنا بر تقاضای جناب آقای / سرکار خانم
+            ${name ? name : <> ................. </>} به شماره ملی
+            ${nationalcode ? nationalcode : <> ................. </>} گواهی می‌شود نامبرده فوق در شرکت
+            ${companyname ? companyname : <> ................ </>} از تاریخ
+            ${date ? date : <> ................ </>} می‌باشد و حقوق و مزایای ناخالص ایشان به صورت ماهیانه به مبلغ
+            ${hoghogh ? hoghogh : <> .............. </>} ریال است. با توجه به مبلغ ماهیانه قسط به میزان
+            ${ghest ? ghest : <> .............. </>} تومان به موجب ضمانت فوق، این شرکت تعهد
             می‌نماید چنانچه وام گیرنده به هر علت از پرداخت اقساط در سر رسید معین
             خودداری نماید با گزارش کتبی بانک تا زمان پایان قرارداد وی با این شرکت،
             مبلغ موردنظر را از حقوق وی طبق قانون کسر و به بانک پرداخت کند.
-          </p>
+           `}
+            </p>
+         
         </Text>
       </View>
     </Page>
@@ -68,24 +66,24 @@ const PdfDocument = ({
 
 const PDFPreview = ({
   name,
+  gender,
+  jobStatus,
   nationalcode,
   companyname,
   hoghogh,
   ghest,
   logo,
-  gender,
-  jobStatus,
   date,
 }: {
   name: string;
+  gender:string | any;
+  jobStatus:string | any;
   nationalcode: string;
   companyname: string;
   hoghogh: string;
   ghest: string;
   logo: File | null;
-  gender: string;
-  jobStatus: string,
-  date:string,
+  date: string;
 }) => (
   <div className="border bg-white shadow-lg ml-28 mt-20 w-[495px] h-[542px] p-4">
     <PdfDocument

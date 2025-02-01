@@ -14,7 +14,7 @@ export default function FormPage() {
   const [organization, setOrganization] = useState<string>("");
   const [hoghogh, setHoghogh] = useState<string>("");
   const [ghest, setGhest] = useState<string>("");
-  const [logo, setLogo] = useState<File | null>(null);
+  const [logo, setLogo] = useState<File | null | any>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [jobStatus, setJobStatus] = useState<string>("");
   const [gender, setGender] = useState<string>("");
@@ -33,7 +33,7 @@ export default function FormPage() {
     ghest: "",
     gender: "",
     jobStatus: "",
-    logo: logo ? URL.createObjectURL(logo) : "",
+    logo: logo ? URL.createObjectURL(logo) : null,
     date:"",
   });
 

@@ -2,7 +2,7 @@ import React, { createContext, useState} from 'react';
 import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
 import Sidebar from './pages/Sidebar/Sidebar';
 import Home from './pages/Home/Home';
-import Requests from './pages/Requests/Requests';
+// import Requests from './pages/Requests/Requests';
 import Settings from './pages/Settings/Settings';
 import Tutorials from './pages/Tutorials/Tutorials';
 import Navbar from './pages/Navbar/Navbar';
@@ -46,7 +46,7 @@ function Layout() {
               <Routes>
                 <Route path="/home" element={<Home />} />
                 <Route path="/form" element={<FormPage />} />
-                <Route path="/requests" element={<Requests />} />
+                {/* <Route path="/requests" element={<Requests />} /> */}
                 <Route path="/settings" element={<Settings />} />
                 <Route path="/tutorials" element={<Tutorials />} />
               </Routes>

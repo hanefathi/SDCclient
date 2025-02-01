@@ -1,9 +1,9 @@
-import React, { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect } from "react";
 import {
   Table,
   TableBody,
   TableCell,
-  TableHead,
+  // TableHead,
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
@@ -15,7 +15,7 @@ import trashgray from "@assets/images/trashgray.svg";
 import trash from "@assets/images/trash.svg";
 import documentdownloadgray from "@assets/images/documentdownloadgray.svg";
 import documentdownload from "@assets/images/documentdownload.svg";
-import chevron from "@assets/images/chevron.svg";
+// import chevron from "@assets/images/chevron.svg";
 import outline from "@assets/images/outline.svg";
 import mingcuteleft from "@assets/images/mingcuteleft.svg";
 import mingcuteright from "@assets/images/mingcuteright.svg";
@@ -23,18 +23,18 @@ import eye from "@assets/images/eye.svg";
 import frame from "@assets/images/frame.svg";
 import ConfirmationModal from './components/ConfirmationModal';
 import CustomDatePicker from "@/components/CustomDatePicker";
-import DatePicker, { Value } from "react-multi-date-picker"; // Import Value type
-import persian from "react-date-object/calendars/persian";
-import persian_fa from "react-date-object/locales/persian_fa";
-import { parse } from 'date-fns';
+// import DatePicker, { Value } from "react-multi-date-picker"; // Import Value type
+// import persian from "react-date-object/calendars/persian";
+// import persian_fa from "react-date-object/locales/persian_fa";
+// import { parse } from 'date-fns';
 import jMoment from 'jalali-moment';
 
 export default function Requests() {
-  const stats = {
-    totalRequests: 18,
-    successfulRequests: 16,
-    unsignedRequests: 2,
-  };
+  // const stats = {
+  //   totalRequests: 18,
+  //   successfulRequests: 16,
+  //   unsignedRequests: 2,
+  // };
 
   
 
@@ -423,7 +423,7 @@ export default function Requests() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {currentRequests.map((request, index) => {
+            {currentRequests.map((request, index:any | undefined | null | number) => {
               let signStatusClass = "";
               switch (request.signStatus.trim()) {
                 case "در انتظار امضا":

@@ -46,15 +46,15 @@ const FormInput = ({
   setGhest: React.Dispatch<React.SetStateAction<string>>;
   logo: File | null | any;
   setLogo: React.Dispatch<React.SetStateAction<File | null | any>>;
-  jobStatus: string;
-  setJobStatus: React.Dispatch<React.SetStateAction<string>>;
-  gender: string | any;
-  setGender: React.Dispatch<React.SetStateAction<string | any>>;
+  jobStatus: string | any | undefined | null;
+  setJobStatus: React.Dispatch<React.SetStateAction<string | any | undefined | null>>;
+  gender: string | any | undefined | null;
+  setGender: React.Dispatch<React.SetStateAction<string | any | undefined | null>>;
   date: string;
   setDate: React.Dispatch<React.SetStateAction<string>>;
   handleModalOpen: () => void;
 }) => {
-  const [jobDate, setJobDate] = useState<any>("");
+  const [jobDate, setJobDate] = useState<any | undefined | null>("");
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files ? e.target.files[0] : null;

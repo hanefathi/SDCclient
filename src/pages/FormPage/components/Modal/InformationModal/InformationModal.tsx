@@ -20,14 +20,14 @@ const InformationModal: React.FC<any> = ({ isOpen, onClose, data, onSignDocument
   const [isLoading, setIsLoading] = useState(false); 
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false); 
 
-  // const handleSignDocument = () => {
-  //   setIsLoading(true); 
-  //   setTimeout(() => {
-  //     setIsLoading(false);
-  //     onSignDocument();
-  //     setIsSuccessModalOpen(true);
-  //   }, 3000);
-  // };
+  const handleSignDocument = () => {
+    setIsLoading(true); 
+    setTimeout(() => {
+      setIsLoading(false);
+      onSignDocument();
+      setIsSuccessModalOpen(true);
+    }, 3000);
+  };
 
 
 

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Dialog, DialogContent, DialogOverlay } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-// import { ModalProps } from "./Modal";
+import { ModalProps } from "./Modal";
 import SuccessModal from "./../SuccessModal/SuccessModal"; 
 import axios from "axios";
 import { getCookie } from "@/utills/Cookies/cookieUtils";
@@ -15,19 +15,19 @@ var font = yekan;
 
 
 
-const InformationModal: React.FC<any> = ({ isOpen, onClose, data, onSignDocument }) => {
+const InformationModal: React.FC<ModalProps> = ({ isOpen, onClose, data, onSignDocument }) => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false); 
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false); 
 
-  // const handleSignDocument = () => {
-  //   setIsLoading(true); 
-  //   setTimeout(() => {
-  //     setIsLoading(false);
-  //     onSignDocument();
-  //     setIsSuccessModalOpen(true);
-  //   }, 3000);
-  // };
+  const handleSignDocument = () => {
+    setIsLoading(true); 
+    setTimeout(() => {
+      setIsLoading(false);
+      onSignDocument();
+      setIsSuccessModalOpen(true);
+    }, 3000);
+  };
 
 
 
@@ -64,26 +64,26 @@ const createTransaction=async(pdf:string)=>{
   
 }
 
-// const handleSigningTransaction = async (id:number) => {
-//   const token = getCookie("authToken");
-//   if (!token) return; // Guard clause
-//   const data = {
-//     "username":"sp_zamanian",
-//     "password":"W2$i%43REd!",
-//     "apiVersion":null
-// }
+const handleSigningTransaction = async (id:number) => {
+  const token = getCookie("authToken");
+  if (!token) return; // Guard clause
+  const data = {
+    "username":"sp_zamanian",
+    "password":"W2$i%43REd!",
+    "apiVersion":null
+}
 
-//   try {
-//     const response = await axios.post(`${import.meta.env.VITE_HOST}/api/v1/transaction/gatewaylink/`+id,data, {
-//       headers: {
-//         'Authorization': `Bearer ${token}`
-//       }
-//     });
-//     window.location.href = response.data.gatewayLink;
-//   } catch (error) {
-//     console.error(error);
-//   }
-// };
+  try {
+    const response = await axios.post(`${import.meta.env.VITE_HOST}/api/v1/transaction/gatewaylink/`+id,data, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+    window.location.href = response.data.gatewayLink;
+  } catch (error) {
+    console.error(error);
+  }
+};
 
 
 
@@ -182,7 +182,7 @@ if(name!=null){
               
               {data.logo ? (
                 <img
-                src={data.logo? URL.createObjectURL(data.logo): undefined}
+                src={data.logo ? URL.createObjectURL(data.logo) : null}
                 className="w-20 h-14 ml-24"
                 alt="Logo"
               />

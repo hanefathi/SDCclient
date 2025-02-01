@@ -40,21 +40,21 @@ const FormInput = ({
   setCompanyname: React.Dispatch<React.SetStateAction<string>>;
   organization: string;
   setOrganization: React.Dispatch<React.SetStateAction<string>>;
-  hoghogh: string;
+  hoghogh: string ;
   setHoghogh: React.Dispatch<React.SetStateAction<string>>;
   ghest: string;
   setGhest: React.Dispatch<React.SetStateAction<string>>;
-  logo: File | null;
-  setLogo: React.Dispatch<React.SetStateAction<File | null>>;
+  logo: File | null | any;
+  setLogo: React.Dispatch<React.SetStateAction<File | null | any>>;
   jobStatus: string;
   setJobStatus: React.Dispatch<React.SetStateAction<string>>;
-  gender: string;
-  setGender: React.Dispatch<React.SetStateAction<string>>;
+  gender: string | any;
+  setGender: React.Dispatch<React.SetStateAction<string | any>>;
   date: string;
   setDate: React.Dispatch<React.SetStateAction<string>>;
   handleModalOpen: () => void;
 }) => {
-  const [jobDate, setJobDate] = useState("");
+  const [jobDate, setJobDate] = useState<any>("");
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files ? e.target.files[0] : null;

@@ -1,10 +1,10 @@
 import React, { useState ,useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import backlogin from "@assets/images/backlogin.jpg";
-import CAPTCHA from "@assets/images/CAPTCHA.svg";
+// import CAPTCHA from "@assets/images/CAPTCHA.svg";
 import FormNegarblue from "@assets/images/FormNegarblue.svg";
-import Cookies from 'js-cookie';
-import { setCookie, getCookie, deleteCookie } from '@/utills/Cookies/cookieUtils';
+// import Cookies from 'js-cookie';
+import { setCookie } from '@/utills/Cookies/cookieUtils';
 
 
 import axios from 'axios';
@@ -30,9 +30,9 @@ export default function Login() {
   const [verificationCode, setVerificationCode] = useState(["", "", "", ""]); 
   const inputRefs = useRef<HTMLInputElement[]>([]);
   const [timer, setTimer] = useState(120);
-  const [status, setStatus] = useState<number>(1)
+  // const [status, setStatus] = useState<number>(1)
   const [otp, setOtp] = useState<string | null>("");
-  const [responseData, setResponseData] = useState(null);
+  // const [responseData, setResponseData] = useState(null);
   // const [error, setError] = useState(null);
   // const [responseCode, setResponseCode] = useState<string | null >("")
   const [isSignUp, setIsSignUp] = useState(true)

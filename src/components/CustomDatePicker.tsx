@@ -5,7 +5,7 @@ import persian from "react-date-object/calendars/persian";
 import persian_fa from "react-date-object/locales/persian_fa";
 import Date from "@assets/images/Date.svg";
 
-import jMoment from "jalali-moment";
+// import jMoment from "jalali-moment";
 
 interface CustomDatePickerProps {
   value: any;

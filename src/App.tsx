@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect, useContext, ReactNode } from 'react';
+import React, { createContext, useState} from 'react';
 import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
 import Sidebar from './pages/Sidebar/Sidebar';
 import Home from './pages/Home/Home';
@@ -9,8 +9,8 @@ import Navbar from './pages/Navbar/Navbar';
 import FormPage from './pages/FormPage/FormPage';
 import MainPage from './pages/MainPage/MainPage';
 import Login from './pages/Login/Login';
-import { getCookie } from './utills/Cookies/cookieUtils';
-import axios from 'axios';
+// import { getCookie } from './utills/Cookies/cookieUtils';
+// import axios from 'axios';
 import './index.css';
 
 interface User {

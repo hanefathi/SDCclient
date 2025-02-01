@@ -14,8 +14,8 @@ export default function Signup() {
   const [nationalCode, setNationalCode] = useState("");
   const [stateForm, setStateForm] = useState(3); // Start with stateForm 1
   const [otp, setOtp] = useState<string | null>(null);
-  const [responseData, setResponseData] = useState(null);
-  const [error, setError] = useState(null);
+  // const [responseData, setResponseData] = useState(null);
+  // const [error, setError] = useState(null);
  
 
   const handleLogin = (e: React.FormEvent) => {
@@ -59,7 +59,7 @@ export default function Signup() {
 
 
 const fetchData = async () => {
-  const token = null; // Example token
+  // const token = null; // Example token
   try {
       const response = await axios.post(`http://localhost:8081/auth/signin`, {
           // Your request body goes here
@@ -164,9 +164,6 @@ const fetchData = async () => {
                   />
                 </div>
                 <button
-                onClick={()=>{
-                  getJwt()
-                }}
                   type="submit"
                   className="w-full py-3 bg-[#3C50E0] text-white font-semibold rounded-md hover:bg-[#2F44C2] transition duration-300"
                 >

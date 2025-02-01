@@ -20,7 +20,7 @@ const PdfDocument: React.FC<PdfDocumentProps> = ({ name, nationalcode }) => (
   <Document>
     <Page size="A4" style={{ fontFamily: 'Vazirmatn', padding: '20px', textAlign: 'right' }}>
       <View style={{ margin: '10px', fontSize: '14px', lineHeight: 1.6, textAlign: 'right' }}>
-        <Text style={{ wordWrap: 'break-word', maxWidth: '100%' }}>
+        <Text style={{maxWidth: '100%' }}>
           با سلام، خواهشمند است اقدامات لازم جهت اتصال فیلترشکن سیستم اینجانب {name}
           با کد ملی {nationalcode} را پیگیری فرمایید. با تشکر و احترام
         </Text>

@@ -1,4 +1,4 @@
-import React from 'react';
+// import React from 'react';
 import { Link } from 'react-router-dom';
 import logo1 from '@assets/images/logo1.svg';
 import homewhite from '@assets/images/homewhite.svg';
@@ -9,11 +9,11 @@ import folder from '@assets/images/folder.svg';
 import folderwhite from '@assets/images/folderwhite.svg';
 import judge from '@assets/images/judge.svg';
 import judgewhite from '@assets/images/judgewhite.svg';
-import Settings from '@assets/images/Settings.svg';
+// import Settings from '@assets/images/Settings.svg';
 import Logoutwhite from '@assets/images/Logoutwhite.svg';
 import Logout from '@assets/images/Logout.svg';
 import headphone from '@assets/images/headphone.svg';
-import { getCookie,deleteCookie } from '@/utills/Cookies/cookieUtils';
+// import { getCookie,deleteCookie } from '@/utills/Cookies/cookieUtils';
 import Cookies from 'js-cookie';
 
 export default function Sidebar() {

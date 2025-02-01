@@ -1,4 +1,4 @@
-import React, { useState,useMemo, useEffect } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import {
   Table,
   TableBody,
@@ -23,13 +23,11 @@ import eye from "@assets/images/eye.svg";
 import frame from "@assets/images/frame.svg";
 import ConfirmationModal from './components/ConfirmationModal';
 import CustomDatePicker from "@/components/CustomDatePicker";
-import DatePicker from "react-multi-date-picker";
+import DatePicker, { Value } from "react-multi-date-picker"; // Import Value type
 import persian from "react-date-object/calendars/persian";
 import persian_fa from "react-date-object/locales/persian_fa";
 import { parse } from 'date-fns';
 import jMoment from 'jalali-moment';
-
-
 
 export default function Requests() {
   const stats = {
@@ -37,7 +35,6 @@ export default function Requests() {
     successfulRequests: 16,
     unsignedRequests: 2,
   };
-
 
   
 
@@ -191,20 +188,17 @@ export default function Requests() {
   const [searchQuery, setSearchQuery] = useState("");
   const [signatureFilter, setSignatureFilter] = useState("");
 
-
   const itemsPerPage = 8;
   const indexOfLastRequest = currentPage * itemsPerPage;
   const indexOfFirstRequest = indexOfLastRequest - itemsPerPage;
-  
+
   const [requests, setRequests] = useState(requestsData);
-  const [selectedRecords, setSelectedRecords] = useState<string[]>([]); 
+  const [selectedRecords, setSelectedRecords] = useState<string[]>([]);
   const [selectAll, setSelectAll] = useState(false);
   const [dateFilter, setDateFilter] = useState<string | null>("");
 
-  
-
-  const handleDateChange = (date: any) => {
-    if (date && date.toDate) {
+  const handleDateChange = (date: Value) => {
+    if (date && typeof date === 'object' && 'toDate' in date) {
       const formattedDate = jMoment(date.toDate()).format("jYYYY/jMM/jDD");
       console.log("Formatted Date:", formattedDate); // Debug line
       setDateFilter(formattedDate);
@@ -212,36 +206,28 @@ export default function Requests() {
       setDateFilter(null);
     }
   };
-  
-  
-  
 
+  useEffect(() => {
+    setCurrentPage(1); // Reset to the first page when filters change.
+  }, [dateFilter]);
 
-// استفاده از useEffect برای بلافاصله فیلتر کردن داده‌ها بعد از تغییر تاریخ
-useEffect(() => {
-  setCurrentPage(1); // صفحه را به اولین صفحه بازنشانی می‌کنیم.
-}, [dateFilter]);
+  const filteredRequests = useMemo(() => {
+    return requests.filter((request) => {
+      const requestDate = jMoment(request.date, 'jYYYY/jMM/jDD').toDate().getTime();
+      const filterDate = dateFilter ? jMoment(dateFilter, 'jYYYY/jMM/jDD').toDate().getTime() : null;
 
-const filteredRequests = useMemo(() => {
-  return requests.filter((request) => {
-    const requestDate = jMoment(request.date, 'jYYYY/jMM/jDD').toDate().getTime();
-    const filterDate = dateFilter ? jMoment(dateFilter, 'jYYYY/jMM/jDD').toDate().getTime() : null;
+      const matchesDate = dateFilter
+        ? requestDate === filterDate
+        : true;
 
-    const matchesDate = dateFilter
-      ? requestDate === filterDate
-      : true;
+      const matchesSignature = signatureFilter ? request.signStatus.includes(signatureFilter) : true;
+      const matchesSearch = searchQuery
+        ? request.trackingCode.includes(searchQuery) || request.loanAmount.includes(searchQuery)
+        : true;
 
-    const matchesSignature = signatureFilter ? request.signStatus.includes(signatureFilter) : true;
-    const matchesSearch = searchQuery
-      ? request.trackingCode.includes(searchQuery) || request.loanAmount.includes(searchQuery)
-      : true;
-
-    return matchesDate && matchesSignature && matchesSearch;
-  });
-}, [requests, signatureFilter, dateFilter, searchQuery]);
-
-
-
+      return matchesDate && matchesSignature && matchesSearch;
+    });
+  }, [requests, signatureFilter, dateFilter, searchQuery]);
 
   const currentRequests = filteredRequests.slice(
     indexOfFirstRequest,
@@ -263,7 +249,6 @@ const filteredRequests = useMemo(() => {
       setSelectedRecords([]);
     }
   };
-  
 
   const toggleSelectRecord = (id: string) => {
     setSelectedRecords((prev) =>
@@ -273,33 +258,30 @@ const filteredRequests = useMemo(() => {
     );
   };
 
- 
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-const [isModalOpen, setIsModalOpen] = useState(false);
+  const handleDelete = () => {
+    if (selectedRecords.length === 0) return;
+    setIsModalOpen(true);
+  };
 
+  const confirmDelete = () => {
+    setRequests((prev) =>
+      prev.filter((request) => !selectedRecords.includes(request.id))
+    );
+    setSelectedRecords([]);
+    setIsModalOpen(false);
+  };
 
-const handleDelete = () => {
-  if (selectedRecords.length === 0) return;
-  setIsModalOpen(true);
-};
+  const cancelDelete = () => {
+    setIsModalOpen(false);
+  };
 
-const confirmDelete = () => {
-  setRequests((prev) =>
-    prev.filter((request) => !selectedRecords.includes(request.id))
-  );
-  setSelectedRecords([]);
-  setIsModalOpen(false);
-};
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [filteredRequests]);
 
-const cancelDelete = () => {
-  setIsModalOpen(false);
-};
-
-useEffect(() => {
-  setCurrentPage(1);
-}, [filteredRequests]);
-
-const [value, setValue] = useState<Value>(new Date());
+  const [value, setValue] = useState<Value>(new Date());
 
   return (
     <div className="p-10 bg-[#eef2ff] min-h-screen font-iranyekan">

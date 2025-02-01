@@ -55,7 +55,7 @@ export default function Home() {
   const [selectAll, setSelectAll] = useState<any>(false);
   const [signatureFilter, setSignatureFilter] = useState<any>("");
   const [dateFilter, setDateFilter] = useState("");
-  const [searchQuery, setSearchQuery] = useState("");
+  // const [searchQuery, setSearchQuery] = useState<any>("");
   const [roles, setRoles] = useState<string[]>([]);
 
   const stats: StatsType = {
@@ -259,16 +259,16 @@ const handleDeleteTransaction=async(id:number)=>{
     document.body.removeChild(link);
   };
 
-  const filteredRequests = requestsData.filter(request => {
-    return (
-      (signatureFilter ? request.signStatus.includes(signatureFilter) : true) &&
-      (dateFilter ? request.date === dateFilter : true) &&
-      (searchQuery
-        ? request.trackingCode.includes(searchQuery) ||
-          request.hoghogh.includes(searchQuery)
-        : true)
-    );
-  });
+  // const searchQuery = requestsData.filter(request => {
+  //   return (
+  //     (signatureFilter ? request.signStatus.includes(signatureFilter) : true) &&
+  //     (dateFilter ? request.date === dateFilter : true) &&
+  //     (searchQuery
+  //       ? request.trackingCode.includes(searchQuery) ||
+  //         request.hoghogh.includes(searchQuery)
+  //       : true)
+  //   );
+  // });
 
 
 

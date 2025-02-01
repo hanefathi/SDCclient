@@ -1,4 +1,4 @@
-import React from "react";
+
 import { Link, useNavigate } from "react-router-dom";
 import background from "@assets/images/background.svg";
 import FormNegar from "@assets/images/FormNegar.svg";
@@ -10,9 +10,7 @@ export default function MainPage() {
     navigate("/login");
   };
 
-  const handleSignup = () => {
-    navigate("/signup");
-  };
+
 
   return (
     <div

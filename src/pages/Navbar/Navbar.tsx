@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import notification from '@assets/images/notification.svg'; 
 import userstatue from '@assets/images/userstatue.svg';
 import Profile from '@assets/images/Profile.png';
@@ -20,7 +20,7 @@ export default function Navbar() {
   const [fullName, setFullName] = useState<string | undefined>(undefined);
   const [phoneNumber, setPhoneNumber] = useState<string>("0912XXXXXXX");
   const [profileImage, setProfileImage] = useState<string>(Profile); // Default profile image
-  const { user } = useContext(ProfileContext) as { user: User };
+  const { user } = useContext(ProfileContext) as { user: User | any};
   
 
   useEffect(() => {
@@ -31,7 +31,7 @@ export default function Navbar() {
 
       const fetchProfileImage = async () => {
         try {
-          const response = await axios.get(user?.profileImage);
+          const response:any = await axios.get(user?.profileImage);
           setProfileImage(response.data.image);
         } catch (error) {
           console.error(error);

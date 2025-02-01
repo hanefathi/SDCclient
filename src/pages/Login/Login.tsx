@@ -33,8 +33,8 @@ export default function Login() {
   const [status, setStatus] = useState<number>(1)
   const [otp, setOtp] = useState<string | null>("");
   const [responseData, setResponseData] = useState(null);
-  const [error, setError] = useState(null);
-  const [responseCode, setResponseCode] = useState<string | null >("")
+  // const [error, setError] = useState(null);
+  // const [responseCode, setResponseCode] = useState<string | null >("")
   const [isSignUp, setIsSignUp] = useState(true)
 
 
@@ -72,7 +72,7 @@ export default function Login() {
   };
 
 const handleSetCookie = (cookieName:string,cookieValue:string) => {
-  setCookie(cookieName, cookieValue, import.meta.env.VITE_COOKI_EXPIRED); // 1 day expiration
+  setCookie(cookieName, cookieValue); // 1 day expiration
   console.log(otp);
 };
 
@@ -125,7 +125,6 @@ const handleSetCookie = (cookieName:string,cookieValue:string) => {
 
 
 const fetchLogin = async () => {
-  const token = getCookie("authToken"); // Example token
   try {
       const response = await axios.post(import.meta.env.VITE_HOST+`/api/v1/auth/signin`, {
           // Your request body goes here
@@ -148,7 +147,12 @@ const fetchLogin = async () => {
       
 
   } catch (error) {
-      console.log(error)
+      alert("کاربر با این شماره وجود نداره.")
+      setMobile("")
+      setPassword("")
+      setOtp("")
+      setIsSignUp(true)
+      setIsCodeSent(false)
   }
 };
 
@@ -169,7 +173,7 @@ const fetchSignUp = async () => {
    
 
   } catch (error) {
-      alert(error)
+    fetchLogin()
   }
 };
 
@@ -279,6 +283,8 @@ const fetchSignUp = async () => {
                 <input
                   type="text"
                   id="mobile"
+                  minLength={11}
+                  maxLength={11}
                   value={mobile}
                   onChange={(e) => setMobile(e.target.value)}
                   className="w-full p-3 border text-[#8A99AF] rounded-md mt-2 text-right"
@@ -297,6 +303,8 @@ const fetchSignUp = async () => {
                    کد ملی
                 </label>
                 <input
+                      minLength={0}
+                      maxLength={10}
                   type="text"
                   id="mobile"
                   value={password}

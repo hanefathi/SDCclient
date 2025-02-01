@@ -1,18 +1,24 @@
 import React, { useState } from 'react';
 import { Document, Page, Text, View, PDFDownloadLink, Font } from '@react-pdf/renderer';
 
-
+// Register the font
 Font.register({
   family: 'Vazirmatn',
   src: '/src/assets/font/Vazirmatn.ttf',
   fontStyle: 'normal',
   fontWeight: 'normal',
-});
+}) as void; // Cast to void to ignore the return value
 
+// Define the props for PdfDocument
+interface PdfDocumentProps {
+  name: string;
+  nationalcode: string;
+}
 
-const PdfDocument = ({ name, nationalcode }: { name: string; nationalcode: string }) => (
+// PdfDocument component
+const PdfDocument: React.FC<PdfDocumentProps> = ({ name, nationalcode }) => (
   <Document>
-    <Page size="A4" style={{ fontFamily: 'Vazirmatn', padding: '20px', direction: 'rtl' }}>
+    <Page size="A4" style={{ fontFamily: 'Vazirmatn', padding: '20px', textAlign: 'right' }}>
       <View style={{ margin: '10px', fontSize: '14px', lineHeight: 1.6, textAlign: 'right' }}>
         <Text style={{ wordWrap: 'break-word', maxWidth: '100%' }}>
           با سلام، خواهشمند است اقدامات لازم جهت اتصال فیلترشکن سیستم اینجانب {name}
@@ -24,7 +30,7 @@ const PdfDocument = ({ name, nationalcode }: { name: string; nationalcode: strin
 );
 
 // Form component
-const PdfForm = () => {
+const PdfForm: React.FC = () => {
   const [name, setName] = useState<string>('');
   const [nationalcode, setNationalcode] = useState<string>('');
 
@@ -80,4 +86,3 @@ const PdfForm = () => {
 };
 
 export default PdfForm;
-

@@ -7,8 +7,8 @@ import Cookies from 'js-cookie';
  * @param value - The value to store in the cookie.
  * @param expiresInDays - The number of days before the cookie expires (default is 1 day).
  */
-export const setCookie = (name: string, value: any, expiresInDays: number = 1): void => {
-  Cookies.set(name, value, { expires: 24 });
+export const setCookie = (name: string, value: any): void => {
+  Cookies.set(name, value, { expires: import.meta.env.VITE_COOKI_EXPIRED*24 });
 };
 
 /**

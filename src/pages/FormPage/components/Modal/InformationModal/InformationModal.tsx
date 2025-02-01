@@ -40,11 +40,11 @@ const createTransaction=async(pdf:string)=>{
       "fullName":data.name,
       "companyName": data.companyname,
       "organizationName": data.organization,
-      "isMale": data.gender=="" || data.gender==undefined?true:false,
+      "isMale": data.gender=="آقا"?true:false,
       "deficitAmount":parseInt(data.ghest),
       "salaryAmount": parseInt(data.hoghogh),
       "nationalCode": data.nationalcode,
-      "empStatus":data.jobStatus==""?1:0,
+      "empStatus":data.jobStatus=="کارمند"?true:false,
       "docUrl": pdf
 }
 
@@ -90,14 +90,14 @@ const handleSigningTransaction = async (id:number) => {
 
 
   const handleSigning = async() =>{
-  var pdf = generatePDF()
+  var pdf = generatePDF(null)
   createTransaction(pdf)
   return
   }
 
   
 
-  const generatePDF = (name:any) => {
+  const generatePDF = (name:any|undefined|null) => {
     const doc = new jsPDF();
 
    var image = URL.createObjectURL(data.logo)
@@ -119,7 +119,7 @@ const handleSigningTransaction = async (id:number) => {
   doc.text("با سلام و احترام", doc.internal.pageSize.width - 10, 100, { align: 'right' });
     // Write Persian text
     const persianText = `
-بدینوسیله بنا بر تقاضای جناب آقای / سرکار خانم ${data.name ? data.name : "......"} به شماره ملی ${data.nationalcode ? data.nationalcode : "........."} گواهی می‌شود نامبرده فوق در شرکت ${data.companyname ? data.companyname : ".........."} از تاریخ ................ می‌باشد و حقوق و مزایای ناخالص ایشان به صورت ماهیانه به مبلغ ${data.hoghogh ? data.hoghogh : "........"} ریال است. با توجه به مبلغ ماهیانه قسط به میزان ${data.ghest ? data.ghest : "......"} تومان به موجب ضمانت فوق، این شرکت تعهد می‌نماید چنانچه وام گیرنده به هر علت از پرداخت اقساط در سر رسید معین خودداری نماید با گزارش کتبی بانک تا زمان پایان قرارداد وی با این شرکت، مبلغ موردنظر را از حقوق وی طبق قانون کسر و به بانک پرداخت کند`;
+بدینوسیله بنا بر تقاضای ${data.gender=="آقا"?"جناب اقای":"سرکار خانم"} ${data.name ? data.name : "......"} به شماره ملی ${data.nationalcode ? data.nationalcode : "........."} گواهی می‌شود نامبرده فوق در شرکت ${data.companyname ? data.companyname : ".........."} از تاریخ ${data.date} می‌باشد و حقوق و مزایای ناخالص ایشان به صورت ماهیانه به مبلغ ${data.hoghogh ? data.hoghogh : "........"} ریال است. با توجه به مبلغ ماهیانه قسط به میزان ${data.ghest ? data.ghest : "......"} تومان به موجب ضمانت فوق، این شرکت تعهد می‌نماید چنانچه وام گیرنده به هر علت از پرداخت اقساط در سر رسید معین خودداری نماید با گزارش کتبی بانک تا زمان پایان قرارداد وی با این شرکت، مبلغ موردنظر را از حقوق وی طبق قانون کسر و به بانک پرداخت کند`;
 
     // Split text into lines automatically
     const splitText = doc.splitTextToSize(persianText, 230); // Adjust width as needed

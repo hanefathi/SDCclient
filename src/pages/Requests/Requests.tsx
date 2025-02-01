@@ -1,9 +1,9 @@
-import { useState,useMemo, useEffect } from "react";
+import React, { useState,useMemo, useEffect } from "react";
 import {
   Table,
   TableBody,
   TableCell,
-  // TableHead,
+  TableHead,
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
@@ -15,7 +15,7 @@ import trashgray from "@assets/images/trashgray.svg";
 import trash from "@assets/images/trash.svg";
 import documentdownloadgray from "@assets/images/documentdownloadgray.svg";
 import documentdownload from "@assets/images/documentdownload.svg";
-// import chevron from "@assets/images/chevron.svg";
+import chevron from "@assets/images/chevron.svg";
 import outline from "@assets/images/outline.svg";
 import mingcuteleft from "@assets/images/mingcuteleft.svg";
 import mingcuteright from "@assets/images/mingcuteright.svg";
@@ -23,20 +23,20 @@ import eye from "@assets/images/eye.svg";
 import frame from "@assets/images/frame.svg";
 import ConfirmationModal from './components/ConfirmationModal';
 import CustomDatePicker from "@/components/CustomDatePicker";
-// import DatePicker from "react-multi-date-picker";
-// import persian from "react-date-object/calendars/persian";
-// import persian_fa from "react-date-object/locales/persian_fa";
-// import { parse } from 'date-fns';
+import DatePicker from "react-multi-date-picker";
+import persian from "react-date-object/calendars/persian";
+import persian_fa from "react-date-object/locales/persian_fa";
+import { parse } from 'date-fns';
 import jMoment from 'jalali-moment';
 
 
 
 export default function Requests() {
-  // const stats = {
-  //   totalRequests: 18,
-  //   successfulRequests: 16,
-  //   unsignedRequests: 2,
-  // };
+  const stats = {
+    totalRequests: 18,
+    successfulRequests: 16,
+    unsignedRequests: 2,
+  };
 
 
   
@@ -222,7 +222,7 @@ useEffect(() => {
   setCurrentPage(1); // صفحه را به اولین صفحه بازنشانی می‌کنیم.
 }, [dateFilter]);
 
-const filteredRequests : any = useMemo(() => {
+const filteredRequests = useMemo(() => {
   return requests.filter((request) => {
     const requestDate = jMoment(request.date, 'jYYYY/jMM/jDD').toDate().getTime();
     const filterDate = dateFilter ? jMoment(dateFilter, 'jYYYY/jMM/jDD').toDate().getTime() : null;
@@ -299,7 +299,7 @@ useEffect(() => {
   setCurrentPage(1);
 }, [filteredRequests]);
 
-const [value, setValue] = useState<any>(new Date());
+const [value, setValue] = useState<Value>(new Date());
 
   return (
     <div className="p-10 bg-[#eef2ff] min-h-screen font-iranyekan">

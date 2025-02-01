@@ -153,15 +153,15 @@ const handleDeleteTransaction=async(id:number)=>{
   };
 
   const toggleSelectAll = () => {
-    setSelectAll((prev: boolean) => !prev);
+    // setSelectAll((prev: boolean) => !prev);
     
-    setSelectedRecords((prev: any[]) => {
-      const newSelectAll = !prev.length; // Determine if we are selecting all or none
-      return newSelectAll ? filteredRequests.map(request => request.id) : [];
-    });
+    // setSelectedRecords((prev: any[]) => {
+    //   const newSelectAll = !prev.length; // Determine if we are selecting all or none
+    //   return newSelectAll ? filteredRequests.map(request => request.id) : [];
+    // });
   };
   
-  const toggleSelectRecord = (id: number) => {
+  const toggleSelectRecord = (id: any) => {
     setSelectedRecords((prev: number[]) =>
       prev.includes(id) ? prev.filter(recordId => recordId !== id) : [...prev, id]
     );
@@ -237,8 +237,8 @@ const handleDeleteTransaction=async(id:number)=>{
     }
   };
 
-  const handlePdf = async (trackId: number,show:true) => {
-    const pdfBase64 = await fetchDataPdf(trackId);
+  const handlePdf = async (trackId: string,show:boolean) => {
+    const pdfBase64 = await fetchDataPdf(parseInt(trackId));
 
     if(show==true) {
       setPdfbas64view(pdfBase64)
@@ -421,7 +421,7 @@ const handleDeleteTransaction=async(id:number)=>{
               </TableRow>
             </TableHeader>
             <TableBody>
-              {managerReq.map((request, index) => {
+              {managerReq.map((request, index:any) => {
                 let signStatusClass = '';
                 if (request.signStatus === "در انتظار امضا") {
                   signStatusClass = "bg-[#FFA70B] bg-opacity-10 text-[#FFA70B]";
@@ -566,7 +566,7 @@ const handleDeleteTransaction=async(id:number)=>{
               </TableRow>
             </TableHeader>
             <TableBody>
-              {requestsData.map((request, index) => {
+              {requestsData.map((request, index:any) => {
                 let signStatusClass = '';
                 if (request.signStatus === "در انتظار امضا") {
                   signStatusClass = "bg-[#FFA70B] bg-opacity-10 text-[#FFA70B]";
@@ -640,7 +640,7 @@ const handleDeleteTransaction=async(id:number)=>{
                         type="checkbox"
                         className="form-checkbox h-4 w-4 text-blue-600 ml-4"
                         checked={selectedRecords.includes(request.id)}
-                        onChange={() => toggleSelectRecord(request.id)}
+                        onChange={():any => toggleSelectRecord(request.id)}
                       />
                       <span >{request.trackingCode}</span>
                     </TableCell>

@@ -22,11 +22,10 @@ const FormInput = ({
   setHoghogh,
   ghest,
   setGhest,
-  logo,
+  // logo,
   setLogo,
   jobStatus,
   setJobStatus,
-  gender,
   setGender,
   date,
   setDate,
@@ -54,7 +53,7 @@ const FormInput = ({
   setDate: React.Dispatch<React.SetStateAction<string>>;
   handleModalOpen: () => void;
 }) => {
-  const [jobDate, setJobDate] = useState<any | undefined | null>("");
+  const [jobDate, setJobDate] = useState<any | undefined | null>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files ? e.target.files[0] : null;

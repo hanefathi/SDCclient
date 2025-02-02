@@ -197,7 +197,7 @@ export default function Requests() {
   const [selectAll, setSelectAll] = useState(false);
   const [dateFilter, setDateFilter] = useState<string | null>("");
 
-  const handleDateChange = (date: Value) => {
+  const handleDateChange = (date: any) => {
     if (date && typeof date === 'object' && 'toDate' in date) {
       const formattedDate = jMoment(date.toDate()).format("jYYYY/jMM/jDD");
       console.log("Formatted Date:", formattedDate); // Debug line
@@ -281,7 +281,7 @@ export default function Requests() {
     setCurrentPage(1);
   }, [filteredRequests]);
 
-  const [value, setValue] = useState<Value>(new Date());
+  const [value, setValue] = useState<any>(new Date());
 
   return (
     <div className="p-10 bg-[#eef2ff] min-h-screen font-iranyekan">
@@ -423,7 +423,7 @@ export default function Requests() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {currentRequests.map((request, index:any | undefined | null | number) => {
+            {currentRequests.map((request) => {
               let signStatusClass = "";
               switch (request.signStatus.trim()) {
                 case "در انتظار امضا":

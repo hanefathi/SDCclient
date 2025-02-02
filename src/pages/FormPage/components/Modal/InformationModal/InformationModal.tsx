@@ -13,21 +13,21 @@ import yekan from "./Yekan"
 var font = yekan;
 
 
+// const InformationModal: React.FC<any> = ({ isOpen, onClose, data, onSignDocument }) => {
 
-
-const InformationModal: React.FC<any> = ({ isOpen, onClose, data, onSignDocument }) => {
+const InformationModal: React.FC<any> = ({ isOpen, onClose, data }) => {
   const navigate = useNavigate();
-  const [isLoading, setIsLoading] = useState(false); 
+  // const [isLoading, setIsLoading] = useState(false); 
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false); 
 
-  const handleSignDocument = () => {
-    setIsLoading(true); 
-    setTimeout(() => {
-      setIsLoading(false);
-      onSignDocument();
-      setIsSuccessModalOpen(true);
-    }, 3000);
-  };
+  // const handleSignDocument = () => {
+  //   setIsLoading(true); 
+  //   setTimeout(() => {
+  //     setIsLoading(false);
+  //     onSignDocument();
+  //     setIsSuccessModalOpen(true);
+  //   }, 3000);
+  // };
 
 
 
@@ -198,7 +198,7 @@ if(name!=null){
               className="bg-[#3C50E0] text-white hover:bg-blue-600 w-5/6 h-10 mt-10"
               onClick={handleSigning} 
             >
-              {isLoading ? "لطفاً صبر کنید..." : "امضا سند"}
+              امضا سند
             </Button>
           </div>
         </DialogContent>

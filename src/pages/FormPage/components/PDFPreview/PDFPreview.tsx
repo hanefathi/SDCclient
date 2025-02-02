@@ -1,4 +1,4 @@
-import React from "react";
+
 import { Document, Page, Text, View, Font } from "@react-pdf/renderer";
 import Profile from "@assets/images/Profile.png";
 
@@ -66,8 +66,8 @@ const PdfDocument = ({
 
 const PDFPreview = ({
   name,
-  gender,
-  jobStatus,
+  // gender,
+  // jobStatus,
   nationalcode,
   companyname,
   hoghogh,

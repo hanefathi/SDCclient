@@ -5,7 +5,7 @@ import SuccessModal from "./SuccessModal/SuccessModal";
 const Modal: React.FC<any> = ({ isOpen, onClose, data }) => {
   const [isInformationModalOpen, setIsInformationModalOpen] = useState(isOpen);
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
-  const [trackingCode, setTrackingCode] = useState<any>("1234567890");
+  // const [trackingCode, setTrackingCode] = useState<any>("1234567890");
 
   const handleSignDocument = () => {
     setIsInformationModalOpen(false); 
@@ -28,7 +28,7 @@ const Modal: React.FC<any> = ({ isOpen, onClose, data }) => {
       <SuccessModal
         isOpen={isSuccessModalOpen}
         onClose={handleCloseSuccessModal}
-        trackingCode={trackingCode}
+        trackingCode={""}
       />
     </>
   );

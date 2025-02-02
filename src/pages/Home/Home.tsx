@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from "react";
+import { useEffect, useState, useContext } from "react";
 import { Table, TableHeader, TableBody, TableRow, TableCell } from "@/components/ui/table";
 import addbutton from "@assets/images/addbutton.svg";
 import { useNavigate } from "react-router-dom";
@@ -51,10 +51,10 @@ export default function Home() {
   const [pdfbas64view, setPdfbas64view] = useState<string | undefined>();
   const [requestsData, setRequestsData] = useState<Req[]>([]);
   const [managerReq, setManagerReq] = useState<any[]>([]);
-  const [selectedRecords, setSelectedRecords] = useState<any[]>([]);
-  const [selectAll, setSelectAll] = useState<any>(false);
-  const [signatureFilter, setSignatureFilter] = useState<any>("");
-  const [dateFilter, setDateFilter] = useState("");
+  // const [selectedRecords, setSelectedRecords] = useState<any[]>([]);
+  // const [selectAll, setSelectAll] = useState<any>(false);
+  // const [signatureFilter, setSignatureFilter] = useState<any>("");
+  // const [dateFilter, setDateFilter] = useState("");
   // const [searchQuery, setSearchQuery] = useState<any>("");
   const [roles, setRoles] = useState<string[]>([]);
 
@@ -108,6 +108,7 @@ const handleDeleteTransaction=async(id:number)=>{
         'Authorization': `Bearer ${token}`
       }
     });
+    console.log(response.data)
     alert("عملیات با موفقیت حدف گردید")
     fetchData()
     
@@ -152,20 +153,21 @@ const handleDeleteTransaction=async(id:number)=>{
     setManagerReq(managerArr.reverse())
   };
 
-  const toggleSelectAll = () => {
-    // setSelectAll((prev: boolean) => !prev);
+//   const toggleSelectAll = ():any => {
+//     setSelectAll((prev: boolean) => !prev);
     
-    // setSelectedRecords((prev: any[]) => {
-    //   const newSelectAll = !prev.length; // Determine if we are selecting all or none
-    //   return newSelectAll ? filteredRequests.map(request => request.id) : [];
-    // });
-  };
+//     setSelectedRecords((prev: number[]): number[] => {
+//       const newSelectAll: any = !prev.length; // Determine if we are selecting all or none
+//       return newSelectAll ? filteredRequests.map(request => request.id) : [];
+//     });
+// };
+
   
-  const toggleSelectRecord = (id: any) => {
-    setSelectedRecords((prev: number[]) =>
-      prev.includes(id) ? prev.filter(recordId => recordId !== id) : [...prev, id]
-    );
-  };
+  // const toggleSelectRecord = (id: any) => {
+  //   setSelectedRecords((prev: number[]) =>
+  //     prev.includes(id) ? prev.filter(recordId => recordId !== id) : [...prev, id]
+  //   );
+  // };
 
   const handleCheckCookie = () => {
     const cookieValue = getCookie('authToken');
@@ -413,15 +415,15 @@ const handleDeleteTransaction=async(id:number)=>{
                   <input
                     type="checkbox"
                     className=" h-4 w-4 text-blue-600 ml-4"
-                    checked={selectAll}
-                    onChange={toggleSelectAll}
+                    // checked={selectAll}
+                    // onChange={toggleSelectAll}
                   />
                   کد رهگیری
                 </TableCell>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {managerReq.map((request, index:any) => {
+              {managerReq.map((request) => {
                 let signStatusClass = '';
                 if (request.signStatus === "در انتظار امضا") {
                   signStatusClass = "bg-[#FFA70B] bg-opacity-10 text-[#FFA70B]";
@@ -505,8 +507,8 @@ const handleDeleteTransaction=async(id:number)=>{
                       <input
                         type="checkbox"
                         className="form-checkbox h-4 w-4 text-blue-600 ml-4"
-                        checked={selectedRecords.includes(request.id)}
-                        onChange={() => toggleSelectRecord(request.id)}
+                        // checked={selectedRecords.includes(request.id)}
+                        // onChange={() => toggleSelectRecord(request.id)}
                       />
                       <span >{request.trackingCode}</span>
                     </TableCell>
@@ -558,15 +560,15 @@ const handleDeleteTransaction=async(id:number)=>{
                   <input
                     type="checkbox"
                     className=" h-4 w-4 text-blue-600 ml-4"
-                    checked={selectAll}
-                    onChange={toggleSelectAll}
+                    // checked={selectAll}
+                    // onChange={toggleSelectAll}
                   />
                   کد رهگیری
                 </TableCell>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {requestsData.map((request, index:any) => {
+              {requestsData.map((request) => {
                 let signStatusClass = '';
                 if (request.signStatus === "در انتظار امضا") {
                   signStatusClass = "bg-[#FFA70B] bg-opacity-10 text-[#FFA70B]";
@@ -639,8 +641,8 @@ const handleDeleteTransaction=async(id:number)=>{
                       <input
                         type="checkbox"
                         className="form-checkbox h-4 w-4 text-blue-600 ml-4"
-                        checked={selectedRecords.includes(request.id)}
-                        onChange={():any => toggleSelectRecord(request.id)}
+                        // checked={selectedRecords.includes(request.id)}
+                        // onChange={():any => toggleSelectRecord(request.id)}
                       />
                       <span >{request.trackingCode}</span>
                     </TableCell>

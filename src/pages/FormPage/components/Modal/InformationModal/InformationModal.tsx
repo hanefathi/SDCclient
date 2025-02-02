@@ -1,111 +1,71 @@
 import React, { useState } from "react";
 import { Dialog, DialogContent, DialogOverlay } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-// import { ModalProps } from "./Modal";
-import SuccessModal from "./../SuccessModal/SuccessModal"; 
+import SuccessModal from "./../SuccessModal/SuccessModal";
 import axios from "axios";
 import { getCookie } from "@/utills/Cookies/cookieUtils";
 import { useNavigate } from "react-router-dom";
 import { jsPDF } from 'jspdf';
 import 'jspdf-autotable';
-import yekan from "./Yekan"
+import yekan from "./Yekan";
 
 var font = yekan;
 
-
-// const InformationModal: React.FC<any> = ({ isOpen, onClose, data, onSignDocument }) => {
-
 const InformationModal: React.FC<any> = ({ isOpen, onClose, data }) => {
   const navigate = useNavigate();
-  // const [isLoading, setIsLoading] = useState(false); 
-  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false); 
+  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
 
-  // const handleSignDocument = () => {
-  //   setIsLoading(true); 
-  //   setTimeout(() => {
-  //     setIsLoading(false);
-  //     onSignDocument();
-  //     setIsSuccessModalOpen(true);
-  //   }, 3000);
-  // };
+  // Helper function to check if an object is a File or Blob
+  const isFileOrBlob = (obj: any): obj is File | Blob => {
+    return obj instanceof File || obj instanceof Blob;
+  };
 
+  // Generate image URL if data.logo is a valid File or Blob
+  const imageUrl = isFileOrBlob(data.logo) ? URL.createObjectURL(data.logo) : null;
 
+  const createTransaction = async (pdf: string) => {
+    const token = getCookie("authToken");
+    if (!token) return; // Guard clause
 
-const createTransaction=async(pdf:string)=>{
-  const token = getCookie("authToken"
-  );
-  if (!token) return; // Guard clause
-  const body = 
-    {
-      "fullName":data.name,
-      "companyName": data.companyname,
-      "organizationName": data.organization,
-      "isMale": data.gender=="آقا"?true:false,
-      "deficitAmount":parseInt(data.ghest),
-      "salaryAmount": parseInt(data.hoghogh),
-      "nationalCode": data.nationalcode,
-      "empStatus":data.jobStatus=="کارمند"?1:0,
-      "docUrl": pdf
-}
+    const body = {
+      fullName: data.name,
+      companyName: data.companyname,
+      organizationName: data.organization,
+      isMale: data.gender === "آقا" ? true : false,
+      deficitAmount: parseInt(data.ghest),
+      salaryAmount: parseInt(data.hoghogh),
+      nationalCode: data.nationalcode,
+      empStatus: data.jobStatus === "کارمند" ? 1 : 0,
+      docUrl: pdf,
+    };
 
-  try {
-    const response = await axios.post(`${import.meta.env.VITE_HOST}/api/v1/transaction`,body, {
-      headers: {
-        'Authorization': `Bearer ${token}`
-      }
-    });
-    alert("عملیات با موفقیت ثبت شد")
-    generatePDF((await response.data).trackId)
-    navigate("/home")
-  } catch (error) {
-    console.error(error);
-  }
-  
-  
-}
+    try {
+      const response = await axios.post(`${import.meta.env.VITE_HOST}/api/v1/transaction`, body, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      alert("عملیات با موفقیت ثبت شد");
+      generatePDF((await response.data).trackId);
+      navigate("/home");
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
-// const handleSigningTransaction = async (id:number) => {
-//   const token = getCookie("authToken");
-//   if (!token) return; // Guard clause
-//   const data = {
-//     "username":"sp_zamanian",
-//     "password":"W2$i%43REd!",
-//     "apiVersion":null
-// }
+  const handleSigning = async () => {
+    const pdf = generatePDF(null);
+    createTransaction(pdf);
+    return;
+  };
 
-//   try {
-//     const response = await axios.post(`${import.meta.env.VITE_HOST}/api/v1/transaction/gatewaylink/`+id,data, {
-//       headers: {
-//         'Authorization': `Bearer ${token}`
-//       }
-//     });
-//     window.location.href = response.data.gatewayLink;
-//   } catch (error) {
-//     console.error(error);
-//   }
-// };
-
-
-
-
-
-  const handleSigning = async() =>{
-  var pdf = generatePDF(null)
-  createTransaction(pdf)
-  return
-  }
-
-  
-
-  const generatePDF = (name:any|undefined|null) => {
+  const generatePDF = (name: any | undefined | null) => {
     const doc = new jsPDF();
 
-   var image = URL.createObjectURL(data.logo)
-
-  if(image!=null){
-   doc.addImage(image,doc.internal.pageSize.width - 42,10,35,35)
-  }
-
+    // Add logo if it exists and is valid
+    if (imageUrl) {
+      doc.addImage(imageUrl, doc.internal.pageSize.width - 42, 10, 35, 35);
+    }
 
     // Add the font to the VFS (make sure 'font' is defined)
     doc.addFileToVFS('Vazir.ttf', font);
@@ -115,11 +75,13 @@ const createTransaction=async(pdf:string)=>{
     doc.setFont('Vazir');
     doc.setFontSize(10); // Set font size
 
-    doc.text(`شرکت ${data.companyname?data.companyname:"......."}`, doc.internal.pageSize.width - 10, 85, { align: 'right' });
-  doc.text("با سلام و احترام", doc.internal.pageSize.width - 10, 100, { align: 'right' });
+    // Add company name and greeting
+    doc.text(`شرکت ${data.companyname ? data.companyname : "......."}`, doc.internal.pageSize.width - 10, 85, { align: 'right' });
+    doc.text("با سلام و احترام", doc.internal.pageSize.width - 10, 100, { align: 'right' });
+
     // Write Persian text
     const persianText = `
-بدینوسیله بنا بر تقاضای ${data.gender=="آقا"?"جناب اقای":"سرکار خانم"} ${data.name ? data.name : "......"} به شماره ملی ${data.nationalcode ? data.nationalcode : "........."} گواهی می‌شود نامبرده فوق در شرکت ${data.companyname ? data.companyname : ".........."} از تاریخ ${data.date} می‌باشد و حقوق و مزایای ناخالص ایشان به صورت ماهیانه به مبلغ ${data.hoghogh ? data.hoghogh : "........"} ریال است. با توجه به مبلغ ماهیانه قسط به میزان ${data.ghest ? data.ghest : "......"} تومان به موجب ضمانت فوق، این شرکت تعهد می‌نماید چنانچه وام گیرنده به هر علت از پرداخت اقساط در سر رسید معین خودداری نماید با گزارش کتبی بانک تا زمان پایان قرارداد وی با این شرکت، مبلغ موردنظر را از حقوق وی طبق قانون کسر و به بانک پرداخت کند`;
+بدینوسیله بنا بر تقاضای ${data.gender == "آقا" ? "جناب اقای" : "سرکار خانم"} ${data.name ? data.name : "......"} به شماره ملی ${data.nationalcode ? data.nationalcode : "........."} گواهی می‌شود نامبرده فوق در شرکت ${data.companyname ? data.companyname : ".........."} از تاریخ ${data.date} می‌باشد و حقوق و مزایای ناخالص ایشان به صورت ماهیانه به مبلغ ${data.hoghogh ? data.hoghogh : "........"} ریال است. با توجه به مبلغ ماهیانه قسط به میزان ${data.ghest ? data.ghest : "......"} تومان به موجب ضمانت فوق، این شرکت تعهد می‌نماید چنانچه وام گیرنده به هر علت از پرداخت اقساط در سر رسید معین خودداری نماید با گزارش کتبی بانک تا زمان پایان قرارداد وی با این شرکت، مبلغ موردنظر را از حقوق وی طبق قانون کسر و به بانک پرداخت کند`;
 
     // Split text into lines automatically
     const splitText = doc.splitTextToSize(persianText, 230); // Adjust width as needed
@@ -127,34 +89,26 @@ const createTransaction=async(pdf:string)=>{
     // Set starting y position
     const startY = 110; // Adjust this value as needed
 
-    // Add a greeting text aligned to the right
-
-
     // Write the main text aligned to the right
-    splitText.forEach((line:any, index:any) => {
-        // Calculate the x position for right alignment
-        const xPosition = doc.internal.pageSize.width - 10; // Adjust as needed
-        doc.text(line, xPosition, startY + (index * 10), { align: 'right' }); // Right alignment
+    splitText.forEach((line: any, index: any) => {
+      const xPosition = doc.internal.pageSize.width - 10; // Adjust as needed
+      doc.text(line, xPosition, startY + (index * 10), { align: 'right' }); // Right alignment
     });
 
     // Get the base64 string of the PDF
     const pdfBase64 = doc.output('datauristring');
 
-    // Alert the base64 string
+    // Clean the base64 string
     const cleanedSuffixImage = pdfBase64.replace(/^data:application\/pdf;filename=generated\.pdf;base64,/, '');
     const pdf = "data:application/pdf;base64," + cleanedSuffixImage;
-if(name!=null){
-  doc.save(`Emzagar-${name}.pdf`);
-}
 
-   return pdf
+    // Save the PDF if a name is provided
+    if (name != null) {
+      doc.save(`Emzagar-${name}.pdf`);
+    }
 
-    // Save the PDF
-    // doc.save("document.pdf");
-};
-
-
-
+    return pdf;
+  };
 
   return (
     <>
@@ -179,24 +133,23 @@ if(name!=null){
             <p><strong className="ml-60 text-[#6681A9] text-right text-sm">قسط:</strong> {data.ghest} ریال</p>
             <p><strong className="ml-60 text-[#6681A9] text-sm">نام شرکت:</strong> {data.companyname}</p>
             <p className="flex items-center text-sm">
-              
-              {data.logo ? (
+              {imageUrl ? (
                 <img
-                src={data.logo ? URL.createObjectURL(data.logo) : null}
-                className="w-20 h-14 ml-24"
-                alt="Logo"
-              />
+                  src={imageUrl}
+                  className="w-20 h-14 ml-24"
+                  alt="Logo"
+                />
               ) : (
                 <span>لوگو موجود نیست</span>
               )}
-              <strong className=" text-[#6681A9] ml-52">:لوگو شرکت</strong>
+              <strong className="text-[#6681A9] ml-52">:لوگو شرکت</strong>
             </p>
           </div>
 
           <div className="flex justify-center ">
             <Button
               className="bg-[#3C50E0] text-white hover:bg-blue-600 w-5/6 h-10 mt-10"
-              onClick={handleSigning} 
+              onClick={handleSigning}
             >
               امضا سند
             </Button>
@@ -208,9 +161,9 @@ if(name!=null){
         <SuccessModal
           isOpen={isSuccessModalOpen}
           onClose={() => setIsSuccessModalOpen(false)}
-          trackingCode="123456789"  
-      />
-    )}
+          trackingCode="123456789"
+        />
+      )}
     </>
   );
 };

@@ -135,8 +135,8 @@ const fetchLogin = async () => {
       // Type assertion for response.data
       if (otp==""||otp==null|| otp==undefined){
         const res: OtpResponse = response.data;
-        // alert(res.message)
-        // setOtp(res.otp);
+        alert(res.otp)
+        setOtp(res.otp);
         return
       }
     
@@ -167,9 +167,9 @@ const fetchSignUp = async () => {
           nationalCode: password
       }, );
 
-    // alert("کاربر با موفقیت ثبت نام شد" + response.data.message)
-    // setOtp(response.data.otp)
-  //  setIsSignUp(false)
+    alert("کاربر با موفقیت ثبت نام شد" + response.data.otp)
+    setOtp(response.data.otp)
+   setIsSignUp(false)
    
 
   } catch (error) {

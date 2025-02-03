@@ -92,7 +92,7 @@ export default function MainPage() {
 
           <div className="flex justify-end">
             <Link
-                to="/Requests"
+                to="/login"
                 className="bg-[#3C50E0] text-white px-6 py-2 rounded-lg hover:bg-[#2F44C2] transition duration-300"
             >
                 ساخت فرم

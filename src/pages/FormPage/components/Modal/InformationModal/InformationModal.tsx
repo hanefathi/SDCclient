@@ -81,7 +81,7 @@ const InformationModal: React.FC<any> = ({ isOpen, onClose, data }) => {
 
     // Write Persian text
     const persianText = `
-بدینوسیله بنا بر تقاضای ${data.gender == "آقا" ? "جناب اقای" : "سرکار خانم"} ${data.name ? data.name : "......"} به شماره ملی ${data.nationalcode ? data.nationalcode : "........."} گواهی می‌شود نامبرده فوق در شرکت ${data.companyname ? data.companyname : ".........."} از تاریخ ${data.date} می‌باشد و حقوق و مزایای ناخالص ایشان به صورت ماهیانه به مبلغ ${data.hoghogh ? data.hoghogh : "........"} ریال است. با توجه به مبلغ ماهیانه قسط به میزان ${data.ghest ? data.ghest : "......"} تومان به موجب ضمانت فوق، این شرکت تعهد می‌نماید چنانچه وام گیرنده به هر علت از پرداخت اقساط در سر رسید معین خودداری نماید با گزارش کتبی بانک تا زمان پایان قرارداد وی با این شرکت، مبلغ موردنظر را از حقوق وی طبق قانون کسر و به بانک پرداخت کند`;
+بدینوسیله بنا بر تقاضای ${data.gender == "آقا" ? "جناب اقای" : "سرکار خانم"} ${data.name ? data.name : "......"} به شماره ملی ${data.nationalcode ? data.nationalcode : "........."} گواهی می‌شود نامبرده فوق در شرکت ${data.companyname ? data.companyname : ".........."} از تاریخ ${data.date} می‌باشد و حقوق و مزایای ناخالص ایشان به صورت ماهیانه به مبلغ ${data.hoghogh ? data.hoghogh : "........"} ریال است. با توجه به مبلغ ماهیانه کسری به میزان ${data.ghest ? data.ghest : "......"} تومان به موجب ضمانت فوق، این شرکت تعهد می‌نماید چنانچه وام گیرنده به هر علت از پرداخت اقساط در سر رسید معین خودداری نماید با گزارش کتبی بانک تا زمان پایان قرارداد وی با این شرکت، مبلغ موردنظر را از حقوق وی طبق قانون کسر و به بانک پرداخت کند`;
 
     // Split text into lines automatically
     const splitText = doc.splitTextToSize(persianText, 230); // Adjust width as needed
@@ -151,7 +151,7 @@ const InformationModal: React.FC<any> = ({ isOpen, onClose, data }) => {
               className="bg-[#3C50E0] text-white hover:bg-blue-600 w-5/6 h-10 mt-10"
               onClick={handleSigning}
             >
-              امضا سند
+              ایجاد سند
             </Button>
           </div>
         </DialogContent>

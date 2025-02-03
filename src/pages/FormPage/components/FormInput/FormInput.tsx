@@ -286,7 +286,7 @@ const FormInput = ({
             htmlFor="name"
             className="mr-6 flex justify-between items-center"
           >
-            مبلغ قسط
+            مبلغ کسری
             <img
               src={money}
               className="w-7 h-7 ml-1"
